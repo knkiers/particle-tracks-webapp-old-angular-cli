@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 
 import {MaterializeDirective} from "angular2-materialize";
 
@@ -11,7 +12,7 @@ import {MaterializeDirective} from "angular2-materialize";
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css'],
-  directives: [MaterializeDirective]
+  directives: [ROUTER_DIRECTIVES, MaterializeDirective]
 })
 export class AppComponent {
   title = 'app works!';
