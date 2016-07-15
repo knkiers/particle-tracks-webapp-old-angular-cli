@@ -19,8 +19,8 @@ export class GridItemComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log('got to app-grid-item');
-    console.log(this.params);
+    //console.log('got to app-grid-item');
+    //console.log(this.params);
   }
 
   findRadius(){
