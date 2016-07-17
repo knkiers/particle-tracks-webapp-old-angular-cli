@@ -47,6 +47,7 @@ const barrels: string[] = [
   'app/end-user/analysis-display',
   'app/end-user/grid',
   'app/end-user/grid-item',
+  'app/end-user/circle-item',
   /** @cli-barrel */
 ];
 

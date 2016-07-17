@@ -31,11 +31,154 @@ export class EventAnalysisService {
 
 
    */
+  fitCircleToData(dots, circles, boundaries) {
+    var circleInputData = this.gatherDataFromDots(dots);
+
+    var circleDatacm = this.circleFitter(circleInputData);
+    var error = false;
+    var errorMessage = '';
+    var dataDict;
+    if (circleDatacm.error) {
+      errorMessage = circleDatacm.errorMessage;
+      error = true;
+    } else {
+      var circleDataPx = this.unitConversionService.translateCircleDatatoPixels(circleDatacm, boundaries);
+      circles.push(circleDataPx);
+    }
+    dataDict = {
+      circles:      circles,
+      error:        error,
+      errorMessage: errorMessage
+    };
+    return dataDict;
+  }
+
+  /*
+   * @name circleFitter
+   * @input data has two lists: data.x and data.y
+   * @returns (x0, y0) and r (in cm) for the best-fit circle
+   * ADD SOME ERROR CHECKING!!!!  Need to check for colinear points, and that N >= 3.
+   *
+   */
+  circleFitter(data) {
+    var xBar = this.mean(data.x);
+    var yBar = this.mean(data.y);
+    var uList = [];
+    var vList = [];
+    var nMax = data.x.length;
+    var i;
+    var circleData;
+
+    if (nMax < 3 ) {
+      circleData = {xc: 0, yc: 0, r: 0,
+        error: true,
+        errorMessage: 'You must choose at least three points.'
+      };
+      return circleData;
+    }
+
+    for (i=0; i < nMax; i++) {
+      uList.push(data.x[i] - xBar);
+      vList.push(data.y[i] - yBar);
+    }
+
+    var Suu =  this.SCalculator([uList, uList]);
+    var Svv =  this.SCalculator([vList, vList]);
+    var Suv =  this.SCalculator([uList, vList]);
+    var Suuu = this.SCalculator([uList, uList, uList]);
+    var Svvv = this.SCalculator([vList, vList, vList]);
+    var Suvv = this.SCalculator([uList, vList, vList]);
+    var Svuu = this.SCalculator([vList, uList, uList]);
+
+    var mInv = this.inverseTwoByTwo([[Suu, Suv], [Suv, Svv]]);
+    if (mInv.error) {
+      circleData = {xc: 0, yc: 0, r: 0,
+        error: true,
+        errorMessage: 'You must choose non-colinear points.'
+      };
+    } else {
+      var inverseMatrix = mInv.inverse;
+      var coeffs = [(Suuu+Suvv)/2, (Svvv+Svuu)/2];
+      var uc = inverseMatrix[0][0]*coeffs[0]+inverseMatrix[0][1]*coeffs[1];
+      var vc = inverseMatrix[1][0]*coeffs[0]+inverseMatrix[1][1]*coeffs[1];
+      var xc = uc + xBar;
+      var yc = vc + yBar;
+      var r = Math.sqrt(uc*uc + vc*vc + (Suu+Svv)/nMax);
+      circleData = {xc: xc, yc: yc, r: r, error: false, errorMessage: ''};
+    }
+    return circleData;
+  }
+
+  mean(list) {
+    var total = 0;
+    var i;
+    for (i=0; i<list.length; i++) {
+      total += list[i];
+    }
+    return total/list.length;
+  }
+
+  /*
+   * listOfLists could be [uList, uList, vList], for example
+   *
+   */
+  SCalculator(listOfLists) {
+    var numLists = listOfLists.length;
+    var i, j;
+    var sublistLengths = listOfLists[0].length; //they'd better be the same length!
+    var total = 0;
+    var product;
+    for (j=0; j < sublistLengths; j++){
+      product = 1;
+      for (i=0; i < numLists; i++){
+        product = product*listOfLists[i][j];
+      }
+      total += product;
+    }
+    return total;
+  }
+
+  /*
+   * MUST CHECK FIRST that the matrix is invertible!!!
+   *
+   */
+  inverseTwoByTwo(matrix) {
+    var a,b,c,d;
+    var eps = 0.000000001;
+    var error = false;
+    var returnObject;
+    a = matrix[0][0];
+    b = matrix[0][1];
+    c = matrix[1][0];
+    d = matrix[1][1];
+    var det = a*d - b*c;
+    if (Math.abs(det) < eps) {
+      returnObject = {
+        error: true,
+        inverse: 0
+      };
+      return returnObject;
+    } else {
+      var inverse = [[d/det, -b/det],[-c/det, a/det]];
+      returnObject = {
+        error: false,
+        inverse: inverse
+      };
+      return returnObject;
+    }
+
+  }
+
+
+
+
+
   gatherDataFromDots(dots: any) {
     var xArray = [];
     var yArray = [];
 
     for (let i in dots) {
+      //console.log(dots[i]);
       if (dots[i].useForFit === true) {
         xArray.push(dots[i].xcm);
         yArray.push(dots[i].ycm);
@@ -47,7 +190,23 @@ export class EventAnalysisService {
     }
     return circleInputData;
   }
-  
+
+  clearActivatedDots(dots) {
+    var i;
+    for (i=0; i<dots.length; i++) {
+      dots[i].useForFit = false;
+      dots[i].activated = false;
+    }
+  }
+
+  clearDotsForFit(dots) {
+    var i;
+    for (i=0; i<dots.length; i++) {
+      dots[i].useForFit = false;
+    }
+  }
+
+
 
 
 

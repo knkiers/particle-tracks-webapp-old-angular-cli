@@ -18,8 +18,19 @@
                [params]="dot"
                (dotSelected)="dotSelected($event)">
             </g>
+
+            <g *ngFor="let circle of circles" app-circle-item
+               [params]="circle">
+            </g>
+
+
+
         </svg>
 
+      </div>
+      <div class="card-action">
+        <button class="btn btn-flat" (click)="addCircle()">Add Circle</button>
+        <button class="btn btn-flat" (click)="clearDotsForFit()">Clear All</button>
       </div>
     </div>
   </div>
