@@ -7,16 +7,6 @@ This service deals with everything having to do with initialization, constants, 
 conversion between units, etc.
 */
 
-const SVG_REGION =
-{
-  height: 500,
-  width: 500,
-  heightDisplay: 400,
-  widthDisplay: 400,
-  xOffset: 50,
-  yOffset: 50
-};
-
 const BOUNDARIES = { // very important that the x and y directions preserve the aspect ratio!!!
   xmin: -5, // cm; boundaries of the display region
   xmax: 5,  // cm
@@ -24,12 +14,23 @@ const BOUNDARIES = { // very important that the x and y directions preserve the 
   ymax: 5,  // cm
   numGridPointsX: 41, // the number of grid points in the x direction; must be at least 2
   numGridPointsY: 41,
+  height: 500,
+  width: 500,
+  heightDisplay: 400, // heightDisplay = yminPx - ymaxPx
+  widthDisplay: 400, // widthDisplay = xmaxPx - xminPx
   xminPx: 50, // boundaries of the display region in pixels
   xmaxPx: 450, // pixels
   yminPx: 450, // pixels; yminPx is at the bottom of the plot region
   ymaxPx: 50, // pixels
   deltaR: 0.1 // cm; radial distance from a track within which a "dot" in the grid will be activated
 };
+
+const INTERACTION_REGION = {// this is the region within which the interaction point can occur
+  xmin: -1,
+  xmax: 1,
+  ymin: -1,
+  ymax: 1
+}
 
 const DOTS = [
   {
@@ -143,14 +144,13 @@ export class UnitConversionService {
     return Observable.fromPromise(promise);
   }
 
-  getActiveAreaDimensions() {
-    var promise = Promise.resolve(SVG_REGION);
+  getBoundaries(){
+    var promise = Promise.resolve(BOUNDARIES);
     return Observable.fromPromise(promise);
   }
 
-
-  getBoundaries(){
-    var promise = Promise.resolve(BOUNDARIES);
+  getInteractionRegion(){
+    var promise = Promise.resolve(INTERACTION_REGION);
     return Observable.fromPromise(promise);
   }
 

@@ -10,11 +10,11 @@ import {
   async, inject
 } from '@angular/core/testing';
 
-import { GridComponent } from './grid.component';
+import { EventComponent } from './event.component';
 
-describe('Component: Grid', () => {
+describe('Component: Event', () => {
   it('should create an instance', () => {
-    let component = new GridComponent();
+    let component = new EventComponent();
     expect(component).toBeTruthy();
   });
 });

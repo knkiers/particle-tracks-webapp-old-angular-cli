@@ -10,12 +10,12 @@
           Title
         </div>
         <p>text</p>
-        <div *ngIf="svgRegion">
-          <svg [attr.height]="svgRegion.height" [attr.width]="svgRegion.width">
-            <rect [attr.x]="svgRegion.xOffset"
-                  [attr.y]="svgRegion.yOffset"
-                  [attr.width]="svgRegion.widthDisplay"
-                  [attr.height]="svgRegion.heightDisplay"
+        <div *ngIf="boundaries">
+          <svg [attr.height]="boundaries.height" [attr.width]="boundaries.width">
+            <rect [attr.x]="boundaries.xminPx"
+                  [attr.y]="boundaries.ymaxPx"
+                  [attr.width]="boundaries.widthDisplay"
+                  [attr.height]="boundaries.heightDisplay"
                   style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
 
             <g *ngFor="let dot of dots" app-grid-item
@@ -27,8 +27,9 @@
                [params]="circle">
             </g>
 
-            
-
+            <g *ngIf="event" app-event
+               [event]="event">
+            </g>
 
           </svg>
         </div>

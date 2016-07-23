@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import {AnalysisDisplayComponent} from '../analysis-display';
 
 import {EventDisplayService} from '../../shared/services/event-display.service';
+import {UnitConversionService} from '../../shared/services/unit-conversion.service';
+import {EventAnalysisService} from '../../shared/services/event-analysis.service';
+
 import {Event} from '../../shared/models/event';
 
 // helpful for integrating svg into angular 2:
@@ -15,7 +18,7 @@ import {Event} from '../../shared/models/event';
   selector: 'app-analyze-event',
   templateUrl: 'analyze-event.component.html',
   styleUrls: ['analyze-event.component.css'],
-  providers: [EventDisplayService],
+  providers: [UnitConversionService, EventDisplayService, EventAnalysisService ],
   directives: [AnalysisDisplayComponent]
 })
 export class AnalyzeEventComponent implements OnInit {

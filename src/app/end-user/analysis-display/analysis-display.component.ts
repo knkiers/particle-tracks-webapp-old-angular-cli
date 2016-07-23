@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 import {GridItemComponent} from '../grid-item';
 import {CircleItemComponent} from '../circle-item';
+import {EventComponent} from '../event';
 
 import {EventDisplayService} from '../../shared/services/event-display.service';
 import {UnitConversionService} from '../../shared/services/unit-conversion.service';
 import {EventAnalysisService} from '../../shared/services/event-analysis.service';
 
+import {Event} from '../../shared/models/event';
 
 @Component({
   moduleId: module.id,
@@ -18,10 +20,12 @@ import {EventAnalysisService} from '../../shared/services/event-analysis.service
     ROUTER_DIRECTIVES,
     GridItemComponent,
     CircleItemComponent,
+    EventComponent
   ],
 })
 export class AnalysisDisplayComponent implements OnInit {
 
+  @Input() event: Event;
   private svgRegion: any;
 
   private dots: any;
@@ -34,12 +38,6 @@ export class AnalysisDisplayComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
-    this.unitConversionService.getActiveAreaDimensions().subscribe(
-      svgRegion => {
-        this.svgRegion = svgRegion;
-        console.log(this.svgRegion);
-      });
     this.unitConversionService.getGrid().subscribe(
       dots => {
         this.dots = dots;
