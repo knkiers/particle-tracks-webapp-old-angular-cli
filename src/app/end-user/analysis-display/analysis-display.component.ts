@@ -7,6 +7,7 @@ import {EventDisplayService} from '../../shared/services/event-display.service';
 import {UnitConversionService} from '../../shared/services/unit-conversion.service';
 import {EventAnalysisService} from '../../shared/services/event-analysis.service';
 
+
 @Component({
   moduleId: module.id,
   selector: 'app-analysis-display',
@@ -21,6 +22,7 @@ import {EventAnalysisService} from '../../shared/services/event-analysis.service
 })
 export class AnalysisDisplayComponent implements OnInit {
 
+  private svgRegion: any;
 
   private dots: any;
   private circles = [];
@@ -32,6 +34,12 @@ export class AnalysisDisplayComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    this.unitConversionService.getActiveAreaDimensions().subscribe(
+      svgRegion => {
+        this.svgRegion = svgRegion;
+        console.log(this.svgRegion);
+      });
     this.unitConversionService.getGrid().subscribe(
       dots => {
         this.dots = dots;

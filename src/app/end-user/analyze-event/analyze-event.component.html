@@ -1,4 +1,10 @@
 <p>
   analyze-event works!
 </p>
+
+<h4>
+  <div *ngIf = "event" [innerHTML]="event.name">
+  </div>
+</h4>
+
 <app-analysis-display></app-analysis-display>

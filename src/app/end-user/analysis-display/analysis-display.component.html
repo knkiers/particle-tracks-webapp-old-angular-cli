@@ -10,9 +10,13 @@
           Title
         </div>
         <p>text</p>
-        <svg height="500" width="500">
-          <rect x="50" y="50" width="400" height="400"
-                style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
+        <div *ngIf="svgRegion">
+          <svg [attr.height]="svgRegion.height" [attr.width]="svgRegion.width">
+            <rect [attr.x]="svgRegion.xOffset"
+                  [attr.y]="svgRegion.yOffset"
+                  [attr.width]="svgRegion.widthDisplay"
+                  [attr.height]="svgRegion.heightDisplay"
+                  style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
 
             <g *ngFor="let dot of dots" app-grid-item
                [params]="dot"
@@ -23,9 +27,11 @@
                [params]="circle">
             </g>
 
+            
 
 
-        </svg>
+          </svg>
+        </div>
 
       </div>
       <div class="card-action">
@@ -34,3 +40,4 @@
       </div>
     </div>
   </div>
+</div>

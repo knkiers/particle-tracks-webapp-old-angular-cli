@@ -7,6 +7,15 @@ This service deals with everything having to do with initialization, constants, 
 conversion between units, etc.
 */
 
+const SVG_REGION =
+{
+  height: 500,
+  width: 500,
+  heightDisplay: 400,
+  widthDisplay: 400,
+  xOffset: 50,
+  yOffset: 50
+};
 
 const BOUNDARIES = { // very important that the x and y directions preserve the aspect ratio!!!
   xmin: -5, // cm; boundaries of the display region
@@ -133,6 +142,12 @@ export class UnitConversionService {
     //var promise = Promise.resolve(DOTS);// Observable.just(DOTS);
     return Observable.fromPromise(promise);
   }
+
+  getActiveAreaDimensions() {
+    var promise = Promise.resolve(SVG_REGION);
+    return Observable.fromPromise(promise);
+  }
+
 
   getBoundaries(){
     var promise = Promise.resolve(BOUNDARIES);

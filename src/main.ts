@@ -1,11 +1,20 @@
 import { bootstrap } from '@angular/platform-browser-dynamic';
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, Injectable } from '@angular/core';
 import { AppComponent, environment } from './app/';
 
 import {APP_ROUTER_PROVIDERS} from './app/app.routes';
-import {HTTP_PROVIDERS} from '@angular/http';
+import {HTTP_PROVIDERS, BrowserXhr} from '@angular/http';
 
 import "angular2-materialize";
+
+@Injectable()
+class CORSBrowserXhr extends BrowserXhr {
+  build() {
+    let xhr = super.build();
+    xhr.withCredentials = true;
+    return xhr;
+  }
+}
 
 if (environment.production) {
   enableProdMode();
