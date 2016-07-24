@@ -25,6 +25,7 @@ export class AnalyzeEventComponent implements OnInit {
 
   private eventJSON: any;
   private event: Event;
+  private numberEventsRequested = 0;// this is a hack to force the browser to refresh
 
   private someText = "X<sup>+</sup> &rarr;  &pi;<sup>+</sup> + &pi;<sup>+</sup> + Y<sup>-</sup>";
 
@@ -39,8 +40,25 @@ export class AnalyzeEventComponent implements OnInit {
         //console.log(JSON.parse(this.event));
         this.event = JSON.parse(this.eventJSON);
         console.log(this.event);
+        this.numberEventsRequested++;
       }
     );
   }
+
+  fetchNewEvent() {
+    this.event = null;
+    this.eventDisplayService.getEvent()
+      .subscribe(
+        event => {
+          this.eventJSON = event;
+          console.log(JSON.parse(this.eventJSON));
+          //console.log(JSON.parse(this.event));
+          this.event = JSON.parse(this.eventJSON);
+          console.log(this.event);
+          this.numberEventsRequested++;
+        }
+      );
+  }
+
 
 }

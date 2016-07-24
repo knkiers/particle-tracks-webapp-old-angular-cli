@@ -15,6 +15,7 @@ import {Event} from '../../shared/models/event';
 export class EventComponent implements OnInit {
 
   @Input() event: Event;
+  @Input() dots: any;
 
   private boundaries: any;
   private interactionRegion: any;
@@ -58,7 +59,7 @@ export class EventComponent implements OnInit {
     this.display = this.eventDisplayService.getStringEventDisplay(
       this.bFieldStrength,
       this.bFieldDirection,
-      /*this.dots,*/
+      this.dots,
       this.boundaries,
       this.interactionLocation,
       this.event);

@@ -25,7 +25,12 @@ import {Event} from '../../shared/models/event';
 })
 export class AnalysisDisplayComponent implements OnInit {
 
-  @Input() event: Event;
+  //@Input() event: Event;
+  //@Input() numberEventsRequested: any;
+
+  private event: Event;
+  private eventJSON: any;
+  private numberEventsRequested = 0;
   private svgRegion: any;
 
   private dots: any;
@@ -34,8 +39,8 @@ export class AnalysisDisplayComponent implements OnInit {
 
   constructor(
     private unitConversionService:UnitConversionService,
-    private eventAnalysisService:EventAnalysisService
-  ) {}
+    private eventAnalysisService:EventAnalysisService,
+    private eventDisplayService:EventDisplayService) {}
 
   ngOnInit() {
     this.unitConversionService.getGrid().subscribe(
@@ -50,6 +55,21 @@ export class AnalysisDisplayComponent implements OnInit {
       },
       err => console.log("ERROR", err),
       () => console.log("Boundaries fetched"));
+  }
+
+  fetchNewEvent() {
+    this.event = null;//forces a redraw of the event when the new one comes in
+    this.eventDisplayService.getEvent()
+      .subscribe(
+        event => {
+          this.eventJSON = event;
+          console.log(JSON.parse(this.eventJSON));
+          //console.log(JSON.parse(this.event));
+          this.event = JSON.parse(this.eventJSON);
+          console.log(this.event);
+          //this.numberEventsRequested++;
+        }
+      );
   }
 
   selectDot(id: any){

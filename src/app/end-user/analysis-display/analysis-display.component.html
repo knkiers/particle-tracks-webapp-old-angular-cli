@@ -6,11 +6,17 @@
   <div class="row">
     <div class="card col s12">
       <div class="card-content ">
-        <div class="card-title">
-          Title
+        <div class="card-title">Process:
+          <div *ngIf="event">
+            <div [innerHTML]="event.name">
+            </div>
+          </div>
+          <div *ngIf="!event">
+            None Selected
+          </div>
         </div>
-        <p>text</p>
-        <div *ngIf="boundaries">
+
+        <div *ngIf="boundaries && dots">
           <svg [attr.height]="boundaries.height" [attr.width]="boundaries.width">
             <rect [attr.x]="boundaries.xminPx"
                   [attr.y]="boundaries.ymaxPx"
@@ -28,7 +34,8 @@
             </g>
 
             <g *ngIf="event" app-event
-               [event]="event">
+                [event]="event"
+                [dots]="dots">
             </g>
 
           </svg>
@@ -36,6 +43,7 @@
 
       </div>
       <div class="card-action">
+        <button class="btn" (click)="fetchNewEvent()">New Event!</button>
         <button class="btn btn-flat" (click)="addCircle()">Add Circle</button>
         <button class="btn btn-flat" (click)="clearDotsForFit()">Clear All</button>
       </div>

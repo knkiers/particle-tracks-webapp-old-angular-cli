@@ -11,6 +11,13 @@ import {UnitConversionService} from './unit-conversion.service';
 @Injectable()
 export class EventDisplayService {
 
+  // WORKING HERE!!!!  So....dots gets passed in, and then edited...and it changes
+  // in a completely different component!  what?!?  should make a copy, and then
+  // use an event emitter or something...the current approach seems a bit funky!
+
+
+
+
   constructor(
     private http:Http,
     private unitConversionService:UnitConversionService) {}
@@ -28,7 +35,7 @@ export class EventDisplayService {
 //      .map((response:Response) => response.json());
 //  }
   getStringEventDisplay(bFieldStrength, bFieldDirection,
-                        //dots,
+                        dots,
                         boundaries, interactionLocation,
                         event){
 
@@ -42,29 +49,27 @@ export class EventDisplayService {
     py = event.parent.energy_momentum[2];
     console.log(px);
 
-    /*
     for (var i=0; i<dots.length; i++) {
       dots[i].useForFit = false;
       dots[i].activated = false;
     }
-    */
 
     if (event.parent.charge != 0) {
       particleDirection = this.inOut(bFieldDirection, event.parent.charge);
-      pathParams = this.curvedPathParams(bFieldStrength, /*dots,*/ boundaries, interactionLocation,
+      pathParams = this.curvedPathParams(bFieldStrength, dots, boundaries, interactionLocation,
         px, py, particleDirection, 'incoming');
       inChargedString += pathParams.string;
     } else {
       inNeutralString += this.straightPathParams(boundaries, interactionLocation, px, py, 'incoming');
     }
-    var i, dP;
-    for (i=0; i<event.decay_products.length; i++) {
+    var dP;
+    for (var i=0; i<event.decay_products.length; i++) {
       dP = event.decay_products[i];
       px = dP.energy_momentum[1];
       py = dP.energy_momentum[2];
       if (dP.charge != 0) {
         particleDirection = this.inOut(bFieldDirection, dP.charge);
-        pathParams = this.curvedPathParams(bFieldStrength, /*dots,*/ boundaries, interactionLocation,
+        pathParams = this.curvedPathParams(bFieldStrength, dots, boundaries, interactionLocation,
           px, py, particleDirection, 'outgoing');
         outChargedString += pathParams.string;
       } else {
@@ -93,7 +98,7 @@ export class EventDisplayService {
    *       - phi0 the angle from (x0, y0) to the interaction point, measured
    *         positive relative to the +x axis
    */
-  curvedPathParams(b_field, /*dots,*/ boundaries,
+  curvedPathParams(b_field, dots, boundaries,
                    interactionLocation, px, py,
                    direction, inout) {
     var p = Math.sqrt(px*px+py*py);
@@ -113,11 +118,11 @@ export class EventDisplayService {
     phiBorder = this.boundaryIntersectionAngle(x0, y0, r, phi0, boundaries, direction, inout);
 
     returnString = this.arcString(x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
-    //dots = activateDots(dots, x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
+    dots = this.activateDots(dots, x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
 
     returnDict = {
       string: returnString,
-      //dots: dots
+      dots: dots
     };
     return returnDict;
 
@@ -304,6 +309,65 @@ export class EventDisplayService {
     }
   }
 
+  // given a particular arc, activates all of the dots that are close to it
+  activateDots(dots, x0, y0, r, phi0, phiBorder, boundaries, direction, inout) {
+    var rdot;
+    var phi;
+    var test;
+    for (var i=0; i<dots.length; i++) {
+      rdot = Math.sqrt((x0-dots[i].xcm)*(x0-dots[i].xcm)+(y0-dots[i].ycm)*(y0-dots[i].ycm));
+      if (Math.abs(rdot-r) <= boundaries.deltaR) {
+        phi = Math.atan2(dots[i].ycm-y0, dots[i].xcm-x0);
+        if ((inout == 'incoming' && direction == 'ccw') || (inout == 'outgoing' && direction == 'cw')) {
+          if(this.angleWithinArc(phiBorder, phi, phi0)){
+            dots[i].activated = true;
+          }
+        } else {
+          if(this.angleWithinArc(phi0, phi, phiBorder)){
+            dots[i].activated = true;
+          }
+        }
+      }
+    }
+    return dots;
+  }
+
+  // determines whether or not phitest is within the arc between phismall and philarge;
+  // it is assumed that phismall < philarge and that they are on the same branch;
+  // phitest is increased or decreased by increments of 2 pi to see if it can be placed between
+  // phismall and philarge; function returns true or false
+  angleWithinArc(phismall, phitest, philarge) {
+    if (phismall>philarge) {
+      return false;
+    }
+    if (philarge > phitest && phitest > phismall) {
+      return true;
+    }
+    // phitest is currently outside the acceptable range, but maybe could be put
+    // inside if incremented in units of 2pi....
+    var twopi = 2*Math.acos(-1);
+    if (phitest > philarge) {
+      while (phitest > philarge) {
+        phitest -= twopi;
+      }
+      if (phitest > phismall) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (phitest < phismall) {
+      while (phitest < phismall) {
+        phitest += twopi;
+      }
+      if (phitest < philarge) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // I don't think it should ever get here, but just in case....
+    return false;
+  }
 
 
 
