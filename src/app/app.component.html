@@ -1,10 +1,17 @@
-<h1>
-  {{title}}
-</h1>
+<nav>
+  <div class="nav-wrapper">
+    <a href="#" class="brand-logo">Particle Tracks</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a >Option 1</a></li>
+      <li><a >Option 2</a></li>
+      <li><a >Option 3</a></li>
+    </ul>
+  </div>
+</nav>
 
-<!-- Modal Trigger -->
+<!-- Modal Trigger
 <a materialize="leanModal" [materializeParams]="[{dismissible: false}]" class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-<!-- Modal Structure -->
+<!-- Modal Structure
 <div id="modal1" class="modal">
   <div class="modal-content">
     <h4>Modal Header</h4>
@@ -14,6 +21,7 @@
     <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
   </div>
 </div>
+-->
 
 <router-outlet></router-outlet>
 

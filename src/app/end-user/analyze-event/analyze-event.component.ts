@@ -23,16 +23,17 @@ import {Event} from '../../shared/models/event';
 })
 export class AnalyzeEventComponent implements OnInit {
 
-  private eventJSON: any;
-  private event: Event;
-  private numberEventsRequested = 0;// this is a hack to force the browser to refresh
+  //private eventJSON: any;
+  //private event: Event;
+  //private numberEventsRequested = 0;// this is a hack to force the browser to refresh
 
-  private someText = "X<sup>+</sup> &rarr;  &pi;<sup>+</sup> + &pi;<sup>+</sup> + Y<sup>-</sup>";
+  //private someText = "X<sup>+</sup> &rarr;  &pi;<sup>+</sup> + &pi;<sup>+</sup> + Y<sup>-</sup>";
 
-  constructor(private eventDisplayService: EventDisplayService) { }
+  constructor(){}
+  //constructor(private eventDisplayService: EventDisplayService) { }
 
   ngOnInit() {
-    this.eventDisplayService.getEvent()
+    /*this.eventDisplayService.getEvent()
       .subscribe(
       event => {
         this.eventJSON = event;
@@ -43,8 +44,9 @@ export class AnalyzeEventComponent implements OnInit {
         this.numberEventsRequested++;
       }
     );
+    */
   }
-
+/*
   fetchNewEvent() {
     this.event = null;
     this.eventDisplayService.getEvent()
@@ -59,6 +61,7 @@ export class AnalyzeEventComponent implements OnInit {
         }
       );
   }
+  */
 
 
 }

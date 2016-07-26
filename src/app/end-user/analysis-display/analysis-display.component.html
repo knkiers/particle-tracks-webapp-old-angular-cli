@@ -1,18 +1,20 @@
 <div class="container">
+  <!--
     <span class="row">
       <h5 class="brand-logo left">Event!</h5>
     </span>
+    -->
   <!-- 'Reading' Card -->
   <div class="row">
     <div class="card col s12">
       <div class="card-content ">
-        <div class="card-title">Process:
+        <div class="card-title">
           <div *ngIf="event">
             <div [innerHTML]="event.name">
             </div>
           </div>
           <div *ngIf="!event">
-            None Selected
+            No Process Selected
           </div>
         </div>
 
