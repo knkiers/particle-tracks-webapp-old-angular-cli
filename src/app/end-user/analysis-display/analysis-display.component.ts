@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
+import { Subscription }   from 'rxjs/Subscription';
+
 import {GridItemComponent} from '../grid-item';
 import {CircleItemComponent} from '../circle-item';
 import {EventComponent} from '../event';
@@ -28,6 +30,7 @@ export class AnalysisDisplayComponent implements OnInit {
   //@Input() event: Event;
   //@Input() numberEventsRequested: any;
 
+  subscription: Subscription;
   private event: Event;
   private eventJSON: any;
   private numberEventsRequested = 0;
@@ -40,7 +43,12 @@ export class AnalysisDisplayComponent implements OnInit {
   constructor(
     private unitConversionService:UnitConversionService,
     private eventAnalysisService:EventAnalysisService,
-    private eventDisplayService:EventDisplayService) {}
+    private eventDisplayService:EventDisplayService) {
+    this.subscription = eventDisplayService.gridActivationAnnounced$.subscribe(
+      gridIndices => {
+        this.activateDots(gridIndices);
+      });
+  }
 
   ngOnInit() {
     this.unitConversionService.getGrid().subscribe(
@@ -70,6 +78,17 @@ export class AnalysisDisplayComponent implements OnInit {
           //this.numberEventsRequested++;
         }
       );
+  }
+
+  activateDots(gridIndices) {
+    if (this.dots !== undefined) {// in principle possible(?) that dots has not yet been initialized....
+      for (let i in this.dots) {
+        this.dots[i].activated = false; // first deactivate all dots
+      }
+      for (let i of gridIndices) { // now activate the ones indicated in gridIndices
+        this.dots[i].activated = true;
+      }
+    }
   }
 
   selectDot(id: any){

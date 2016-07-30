@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject }    from 'rxjs/Subject';
 
 import {Http, Response} from '@angular/http';
 
@@ -11,12 +12,11 @@ import {UnitConversionService} from './unit-conversion.service';
 @Injectable()
 export class EventDisplayService {
 
-  // WORKING HERE!!!!  So....dots gets passed in, and then edited...and it changes
-  // in a completely different component!  what?!?  should make a copy, and then
-  // use an event emitter or something...the current approach seems a bit funky!
+  // Observable source
+  private gridActivationAnnouncedSource = new Subject();
 
-
-
+  // Observable stream
+  gridActivationAnnounced$ = this.gridActivationAnnouncedSource.asObservable();
 
   constructor(
     private http:Http,
@@ -26,6 +26,11 @@ export class EventDisplayService {
     return this.http
       .get(EventUrl)
       .map(response => response.json());
+  }
+
+  // Service message command
+  announceGridActivation(gridIndices: number[]) {
+    this.gridActivationAnnouncedSource.next(gridIndices);
   }
 
 //  getEvent() {
@@ -45,20 +50,17 @@ export class EventDisplayService {
     var outNeutralString = '';
     var particleDirection;
     var px, py, pathParams;
+    var activatedGridIndices = [];
+
     px = event.parent.energy_momentum[1];
     py = event.parent.energy_momentum[2];
-    console.log(px);
-
-    for (var i=0; i<dots.length; i++) {
-      dots[i].useForFit = false;
-      dots[i].activated = false;
-    }
 
     if (event.parent.charge != 0) {
       particleDirection = this.inOut(bFieldDirection, event.parent.charge);
       pathParams = this.curvedPathParams(bFieldStrength, dots, boundaries, interactionLocation,
         px, py, particleDirection, 'incoming');
       inChargedString += pathParams.string;
+      activatedGridIndices = this.concatenateTwoArrays(activatedGridIndices,pathParams.activatedDots);
     } else {
       inNeutralString += this.straightPathParams(boundaries, interactionLocation, px, py, 'incoming');
     }
@@ -72,15 +74,30 @@ export class EventDisplayService {
         pathParams = this.curvedPathParams(bFieldStrength, dots, boundaries, interactionLocation,
           px, py, particleDirection, 'outgoing');
         outChargedString += pathParams.string;
+        activatedGridIndices = this.concatenateTwoArrays(activatedGridIndices,pathParams.activatedDots);
       } else {
         outNeutralString += this.straightPathParams(boundaries, interactionLocation, px, py, 'outgoing');
       }
     }
 
+    // let AnalysisDisplayComponent know about the activated dots via a subscription....
+    this.announceGridActivation(activatedGridIndices);
+
     var dString = {'inCharged': inChargedString, 'inNeutral': inNeutralString,
       'outCharged': outChargedString, 'outNeutral': outNeutralString};
     return dString;
 
+  }
+
+  concatenateTwoArrays(array1, array2){
+    var returnArray = []
+    for (let el of array1) {
+      returnArray.push(el);
+    }
+    for (let el of array2) {
+      returnArray.push(el);
+    }
+    return returnArray;
   }
 
   inOut(bFieldDirection, charge){
@@ -106,6 +123,7 @@ export class EventDisplayService {
     var phi0, x0, y0, phiBorder;
     var PI = Math.acos(-1);
     var returnString, returnDict;
+    var activatedDots;
 
     if (direction == 'ccw') {
       phi0 = Math.atan2(-px, py); // phi0 = tan((-px)/py)
@@ -118,12 +136,15 @@ export class EventDisplayService {
     phiBorder = this.boundaryIntersectionAngle(x0, y0, r, phi0, boundaries, direction, inout);
 
     returnString = this.arcString(x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
-    dots = this.activateDots(dots, x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
+    activatedDots = this.activateDots(dots, x0, y0, r, phi0, phiBorder, boundaries, direction, inout);
 
+    console.log('inside curvedpathparams');
+    console.log(activatedDots);
     returnDict = {
       string: returnString,
-      dots: dots
+      activatedDots: activatedDots
     };
+    console.log(returnDict);
     return returnDict;
 
   }
@@ -314,22 +335,25 @@ export class EventDisplayService {
     var rdot;
     var phi;
     var test;
+    var activatedDots = []; // will contain a list of the indices of the dots that should be activated
     for (var i=0; i<dots.length; i++) {
       rdot = Math.sqrt((x0-dots[i].xcm)*(x0-dots[i].xcm)+(y0-dots[i].ycm)*(y0-dots[i].ycm));
       if (Math.abs(rdot-r) <= boundaries.deltaR) {
         phi = Math.atan2(dots[i].ycm-y0, dots[i].xcm-x0);
         if ((inout == 'incoming' && direction == 'ccw') || (inout == 'outgoing' && direction == 'cw')) {
           if(this.angleWithinArc(phiBorder, phi, phi0)){
-            dots[i].activated = true;
+            //dots[i].activated = true;
+            activatedDots.push(i);
           }
         } else {
           if(this.angleWithinArc(phi0, phi, phiBorder)){
-            dots[i].activated = true;
+            //dots[i].activated = true;
+            activatedDots.push(i);
           }
         }
       }
     }
-    return dots;
+    return activatedDots;
   }
 
   // determines whether or not phitest is within the arc between phismall and philarge;
