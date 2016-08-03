@@ -16,4 +16,19 @@ export class CircleItemComponent implements OnInit {
     console.log('got to app-circle-item!');
   }
 
+  circleColor(){
+    if (this.params.hovered) {
+      return 'red';
+    } else {
+      return 'grey';
+    }
+  }
+
+  strokeWidth(){
+    if (this.params.hovered) {
+      return 3;
+    } else {
+      return 2;
+    }
+  }
 }

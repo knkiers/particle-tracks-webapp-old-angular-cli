@@ -49,6 +49,7 @@ const barrels: string[] = [
   'app/end-user/circle-item',
   'app/end-user/event',
   'app/end-user/event-item',
+  'app/end-user/circle-table',
   /** @cli-barrel */
 ];
 

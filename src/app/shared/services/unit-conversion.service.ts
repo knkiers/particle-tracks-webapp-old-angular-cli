@@ -167,7 +167,8 @@ export class UnitConversionService {
       yc:   circleDatacm.yc,
       r:    circleDatacm.r,
       CW:   true,
-      incoming: true
+      incoming: true,
+      hovered: false
     };
     return circleDataPx;
   }

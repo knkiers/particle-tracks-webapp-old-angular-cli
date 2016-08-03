@@ -18,36 +18,68 @@
           </div>
         </div>
 
-        <div *ngIf="boundaries && dots">
-          <svg [attr.height]="boundaries.height" [attr.width]="boundaries.width">
-            <rect [attr.x]="boundaries.xminPx"
-                  [attr.y]="boundaries.ymaxPx"
-                  [attr.width]="boundaries.widthDisplay"
-                  [attr.height]="boundaries.heightDisplay"
-                  style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
+        <div class="row">
+          <div class ="col s8">
+            <div *ngIf="boundaries && dots">
+              <svg [attr.height]="boundaries.height" [attr.width]="boundaries.width">
+                <rect [attr.x]="boundaries.xminPx"
+                      [attr.y]="boundaries.ymaxPx"
+                      [attr.width]="boundaries.widthDisplay"
+                      [attr.height]="boundaries.heightDisplay"
+                      style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
 
-            <g *ngFor="let dot of dots" app-grid-item
-               [params]="dot"
-               (dotSelected)="dotSelected($event)">
-            </g>
+                <g *ngFor="let dot of dots" app-grid-item
+                   [colourModeOn]="colourModeOn"
+                   [params]="dot"
+                   (dotSelected)="dotSelected($event)"
+                   (dotDeselected)="dotDeselected($event)">
+                </g>
 
-            <g *ngFor="let circle of circles" app-circle-item
-               [params]="circle">
-            </g>
+                <g *ngFor="let circle of circles" app-circle-item
+                   [params]="circle">
+                </g>
 
-            <g *ngIf="event" app-event
-                [event]="event"
-                [dots]="dots">
-            </g>
+                <g *ngIf="eventDisplay && ((!editModeOn)||revealEvent)" app-event
+                    [eventDisplay]="eventDisplay"
+                    [dots]="dots">
+                </g>
 
-          </svg>
+              </svg>
+            </div>
+          </div>
+          <div class ="col s4">
+            <app-circle-table
+              [circles]="circles">
+            </app-circle-table>
+          </div>
         </div>
 
       </div>
       <div class="card-action">
-        <button class="btn" (click)="fetchNewEvent()">New Event!</button>
-        <button class="btn btn-flat" (click)="addCircle()">Add Circle</button>
-        <button class="btn btn-flat" (click)="clearDotsForFit()">Clear All</button>
+        <div *ngIf="!editModeOn">
+          <button class="btn" (click)="fetchNewEvent()">Get Event</button>
+          <button *ngIf="event" class="btn" (click)="turnOnEditMode()">Analyze This Event</button>
+        </div>
+        <div *ngIf="editModeOn">
+          <button class="btn btn-flat" (click)="addCircle()">Add Circle</button>
+          <button
+            class="btn btn-flat"
+            (mouseenter)="showEvent()"
+            (mouseout)="hideEvent()">
+            Show Event
+          </button>
+
+          <!-- Switch -->
+          <span class="switch">
+            <label>
+              Deselect
+              <input type="checkbox" [(ngModel)]="colourModeOn">
+              <span class="lever"></span>
+              Select
+            </label>
+          </span>
+
+        </div>
       </div>
     </div>
   </div>

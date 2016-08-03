@@ -31,22 +31,22 @@ export class EventAnalysisService {
 
 
    */
-  fitCircleToData(dots, circles, boundaries) {
+  fitCircleToData(dots, boundaries) {
     var circleInputData = this.gatherDataFromDots(dots);
 
     var circleDatacm = this.circleFitter(circleInputData);
     var error = false;
     var errorMessage = '';
     var dataDict;
+    var circleDataPx
     if (circleDatacm.error) {
       errorMessage = circleDatacm.errorMessage;
       error = true;
     } else {
-      var circleDataPx = this.unitConversionService.translateCircleDatatoPixels(circleDatacm, boundaries);
-      circles.push(circleDataPx);
+      circleDataPx = this.unitConversionService.translateCircleDatatoPixels(circleDatacm, boundaries);
     }
     dataDict = {
-      circles:      circles,
+      circle:      circleDataPx,
       error:        error,
       errorMessage: errorMessage
     };
@@ -191,23 +191,14 @@ export class EventAnalysisService {
     return circleInputData;
   }
 
-  clearActivatedDots(dots) {
-    var i;
-    for (i=0; i<dots.length; i++) {
-      dots[i].useForFit = false;
-      dots[i].activated = false;
-    }
-  }
-
+  /*
   clearDotsForFit(dots) {
     var i;
     for (i=0; i<dots.length; i++) {
       dots[i].useForFit = false;
     }
   }
-
-
-
+  */
 
 
 }

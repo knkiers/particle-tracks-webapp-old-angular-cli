@@ -1,23 +1,23 @@
-<svg:path *ngIf="display"
-          [attr.d]="display.inCharged"
+<svg:path *ngIf="eventDisplay"
+          [attr.d]="eventDisplay.inCharged"
           stroke="green"
           stroke-width="3"
           fill="none">
 </svg:path>
-<svg:path *ngIf="display"
-          [attr.d]="display.inNeutral"
+<svg:path *ngIf="eventDisplay"
+          [attr.d]="eventDisplay.inNeutral"
           stroke="green"
           stroke-dasharray = "10, 5"
           stroke-width="3">
 </svg:path>
-<svg:path *ngIf="display"
-          [attr.d]="display.outCharged"
+<svg:path *ngIf="eventDisplay"
+          [attr.d]="eventDisplay.outCharged"
           stroke="grey"
           stroke-width="3"
           fill="none">
 </svg:path>
-<svg:path *ngIf="display"
-          [attr.d]="display.outNeutral"
+<svg:path *ngIf="eventDisplay"
+          [attr.d]="eventDisplay.outNeutral"
           stroke="grey"
           stroke-dasharray = "10, 5"
           stroke-width="3">

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
+import {MaterializeDirective} from "angular2-materialize";
+
 const RADIUS_ACTIVATED = 4;//px
 const RADIUS_NOT_ACTIVATED = 0.5;
 const STROKE_WIDTH_USED_FOR_FIT = 2;
@@ -13,8 +15,10 @@ const STROKE_WIDTH_NOT_USED_FOR_FIT = 0;
 })
 export class GridItemComponent implements OnInit {
 
+  @Input() colourModeOn: boolean;
   @Input() params: any;
   @Output() dotSelected = new EventEmitter();
+  @Output() dotDeselected = new EventEmitter();
 
   constructor() {}
 
@@ -33,8 +37,14 @@ export class GridItemComponent implements OnInit {
 
   checkDot(){
     console.log('moused!');
-    if (this.params.activated) {
-      this.dotSelected.emit(this.params);
+    if (this.colourModeOn) {
+      if (this.params.activated && (!this.params.useForFit)) {
+        this.dotSelected.emit(this.params);
+      }
+    } else {
+      if (this.params.activated && (this.params.useForFit)) {
+        this.dotDeselected.emit(this.params);
+      }
     }
   }
 
