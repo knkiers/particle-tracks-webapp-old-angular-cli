@@ -44,6 +44,11 @@
                     [dots]="dots">
                 </g>
 
+                <g *ngIf="eventDisplay && editModeOn && showAxes" app-axis
+                   [boundaries]="boundaries"
+                   [interactionLocation]="interactionLocation">
+                </g>
+
               </svg>
             </div>
           </div>

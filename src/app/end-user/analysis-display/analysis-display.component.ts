@@ -8,6 +8,7 @@ import {GridItemComponent} from '../grid-item';
 import {CircleItemComponent} from '../circle-item';
 import {EventComponent} from '../event';
 import {CircleTableComponent} from '../circle-table';
+import {AxisComponent} from '../axis';
 
 import {EventDisplayService} from '../../shared/services/event-display.service';
 import {UnitConversionService} from '../../shared/services/unit-conversion.service';
@@ -33,6 +34,7 @@ import {Event} from '../../shared/models/event';
     CircleItemComponent,
     EventComponent,
     CircleTableComponent,
+    AxisComponent,
     MaterializeDirective
   ],
 })
@@ -51,6 +53,7 @@ export class AnalysisDisplayComponent implements OnInit {
 
   private dots: any;
   private circles = [];
+  private numberCircles = 0;
   private boundaries: any;
   private interactionRegion: any;
   private interactionLocation: any;
@@ -59,6 +62,7 @@ export class AnalysisDisplayComponent implements OnInit {
   private editModeOn = false;
   private revealEvent = false;
   private colourModeOn = true;
+  private showAxes = false;
 
   private bFieldStrength = 50;
   private bFieldDirection = 'in';
@@ -75,6 +79,7 @@ export class AnalysisDisplayComponent implements OnInit {
     this.circleSubscription = circleBindingService.circleUpdated$.subscribe(
       updateData=> {
         this.editCircleProperty(updateData);
+        this.updateCircleTangentAngles();
       }
     );
 
@@ -218,6 +223,12 @@ export class AnalysisDisplayComponent implements OnInit {
     if (!dataDict.error){
       this.circles.push(dataDict.circle);
       this.clearDotsForFit();
+      this.numberCircles = this.circles.length;
+      console.log(this.numberCircles);
+      if (this.numberCircles >= 2) {
+        this.showAxes = true;
+        this.updateCircleTangentAngles();
+      }
     }
 
   }
@@ -241,6 +252,12 @@ export class AnalysisDisplayComponent implements OnInit {
   deleteCircle(i: number) {
     if (this.circles[i]!==undefined) {// in case the circle was deleted in the meantime, or something
       this.circles.splice(i,1);
+      this.numberCircles = this.circles.length;
+      console.log(this.numberCircles);
+      if (this.numberCircles < 2) {
+        this.showAxes = false;
+        this.updateCircleTangentAngles();
+      }
     }
   }
 
@@ -249,6 +266,28 @@ export class AnalysisDisplayComponent implements OnInit {
       this.circles[i].CW = !this.circles[i].CW;
     }
   }
+
+  updateCircleTangentAngles() {
+    if (!this.showAxes) {
+      for (let i in this.circles) {
+        this.circles[i].theta = null;
+      }
+    } else {
+      for (let i in this.circles) {
+        var theta = this.eventAnalysisService.computeTangentAngle(this.interactionLocation, this.circles[i]);
+        this.circles[i].theta = theta;
+      }
+    }
+  }
+
+  /*
+  addCircleTangentAngles() {
+    for (let i in this.circles) {
+      var theta = this.eventAnalysisService.computeTangentAngle(this.interactionLocation, this.circles[i]);
+      this.circles[i].theta = theta;
+    }
+  }
+  */
 
   toggleParticleIncomingOutgoing(i: number) {
     if (this.circles[i]!==undefined) {// in case the circle was deleted in the meantime, or something

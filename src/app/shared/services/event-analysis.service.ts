@@ -33,17 +33,18 @@ export class EventAnalysisService {
    */
   fitCircleToData(dots, boundaries) {
     var circleInputData = this.gatherDataFromDots(dots);
+    var dotIndices = circleInputData.dotIndices;
 
     var circleDatacm = this.circleFitter(circleInputData);
     var error = false;
     var errorMessage = '';
     var dataDict;
-    var circleDataPx
+    var circleDataPx;
     if (circleDatacm.error) {
       errorMessage = circleDatacm.errorMessage;
       error = true;
     } else {
-      circleDataPx = this.unitConversionService.translateCircleDatatoPixels(circleDatacm, boundaries);
+      circleDataPx = this.unitConversionService.translateCircleDatatoPixels(circleDatacm, boundaries, dotIndices);
     }
     dataDict = {
       circle:      circleDataPx,
@@ -176,20 +177,36 @@ export class EventAnalysisService {
   gatherDataFromDots(dots: any) {
     var xArray = [];
     var yArray = [];
+    var dotIndices = [];
 
     for (let i in dots) {
       //console.log(dots[i]);
       if (dots[i].useForFit === true) {
         xArray.push(dots[i].xcm);
         yArray.push(dots[i].ycm);
+        dotIndices.push(+i);//'+' converts string to number
       }
     }
     var circleInputData = {
       x: xArray,
-      y: yArray
+      y: yArray,
+      dotIndices: dotIndices
     }
     return circleInputData;
   }
+
+  computeTangentAngle(axisLocation, circle) {
+    var theta;
+    var PI = Math.acos(-1);
+    var phi = Math.atan2(axisLocation.y-circle.yc, axisLocation.x-circle.xc);
+    if (!circle.CW) {
+      theta = (phi+PI/2+2*PI) % (2*PI);
+    } else {
+      theta = (phi+3*PI/2+2*PI) % (2*PI);
+    }
+    return theta;
+  }
+
 
   /*
   clearDotsForFit(dots) {

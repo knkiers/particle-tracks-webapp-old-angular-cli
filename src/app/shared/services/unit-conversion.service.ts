@@ -32,66 +32,6 @@ const INTERACTION_REGION = {// this is the region within which the interaction p
   ymax: 1
 }
 
-const DOTS = [
-  {
-    id: 1,
-    activated: true,
-    useForFit: false,
-    x: '110',
-    y: '200',
-    xcm: '1.10',
-    ycm: '2.00'
-  },
-  {
-    id: 2,
-    activated: false,
-    useForFit: false,
-    x: '200',
-    y: '300',
-    xcm: '2.00',
-    ycm: '3.00'
-  },
-  {
-    id: 3,
-    activated: true,
-    useForFit: false,
-    x: '250',
-    y: '300',
-    xcm: '2.50',
-    ycm: '3.00',
-  },
-  {
-    id: 4,
-    activated: true,
-    useForFit: false,
-    x: '300',
-    y: '300',
-    xcm: '3.00',
-    ycm: '3.00'
-  },
-  {
-    id: 5,
-    activated: true,
-    useForFit: false,
-    x: '350',
-    y: '300',
-    xcm: '3.50',
-    ycm: '3.00'
-  },
-  {
-    id: 6,
-    activated: true,
-    useForFit: false,
-    x: '375',
-    y: '250',
-    xcm: '3.75',
-    ycm: '2.50'
-  }
-
-
-];
-
-
 
 @Injectable()
 export class UnitConversionService {
@@ -156,7 +96,7 @@ export class UnitConversionService {
     return Observable.fromPromise(promise);
   }
 
-  translateCircleDatatoPixels(circleDatacm, boundaries) {
+  translateCircleDatatoPixels(circleDatacm, boundaries, dotIndices) {
     var center = this.translatecmtoPixels(circleDatacm.xc, circleDatacm.yc, boundaries);
     var r = this.translateRadiuscmtoPixels(circleDatacm.r, boundaries);
     var circleDataPx = {
@@ -168,7 +108,9 @@ export class UnitConversionService {
       r:    circleDatacm.r,
       CW:   true,
       incoming: true,
-      hovered: false
+      hovered: false,
+      dotIndices: dotIndices,
+      theta: null// eventually the (approx.) angle (in radians) of the momentum vector
     };
     return circleDataPx;
   }

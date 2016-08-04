@@ -16,6 +16,9 @@ import { RoundRealPipe } from '../../shared/pipes/round-real.pipe';
 })
 export class CircleTableComponent implements OnInit {
 
+  // WORKING HERE: next...when hovering/unhovering a table, change the dots
+  // in the dotIndices array to be red/not red via the circle binding service, etc.
+
   @Input() circles: any;
 
   constructor(private circleBindingService:CircleBindingService) {}
@@ -69,6 +72,10 @@ export class CircleTableComponent implements OnInit {
 
   circleInfo(i: number){
     console.log(this.circles[i]);
+    if(this.circles[i].theta) {
+      console.log('px: ' + 0.3 * 50 * this.circles[i].r * Math.cos(this.circles[i].theta));
+      console.log('py: ' + 0.3 * 50 * this.circles[i].r * Math.sin(this.circles[i].theta));
+    }
   }
 
 }

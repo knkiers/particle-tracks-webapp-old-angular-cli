@@ -24,6 +24,8 @@
               <i class="material-icons">edit</i>
             </a>
           </p>
+          <p *ngIf="circle.theta"> &theta;: {{circle.theta | roundReal : 4}}
+          </p>
         </div>
       </div>
     </div>
