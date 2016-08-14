@@ -53,9 +53,32 @@
             </div>
           </div>
           <div class ="col s4">
-            <app-circle-table
-              [circles]="circles">
-            </app-circle-table>
+            <div *ngIf="momentumDiagramBoundaries && eventDisplay && editModeOn && showAxes" class="row">
+              <div class="col s12">
+                <svg [attr.height]="momentumDiagramBoundaries.height" [attr.width]="momentumDiagramBoundaries.width">
+                  <rect [attr.x]="momentumDiagramBoundaries.xminPx"
+                        [attr.y]="momentumDiagramBoundaries.ymaxPx"
+                        [attr.width]="momentumDiagramBoundaries.widthDisplay"
+                        [attr.height]="momentumDiagramBoundaries.heightDisplay"
+                        style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
+
+                  <g *ngIf="eventDisplay && editModeOn && showAxes" app-momentum-axis
+                     [boundaries]="momentumDiagramBoundaries"
+                     [circles]="circles"
+                     [wakeUp]="circleChange">
+                  </g>
+
+                </svg>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col s12">
+                <app-circle-table
+                  [circles]="circles">
+                </app-circle-table>
+              </div>
+            </div>
           </div>
         </div>
 

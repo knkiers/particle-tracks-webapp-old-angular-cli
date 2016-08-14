@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
+import {MaterializeDirective} from "angular2-materialize";
+
 import { CircleBindingService } from '../circle-binding.service';
 import { Subscription }   from 'rxjs/Subscription';
 
@@ -12,7 +14,8 @@ import { RoundRealPipe } from '../../shared/pipes/round-real.pipe';
   templateUrl: 'circle-table.component.html',
   styleUrls: ['circle-table.component.css'],
   pipes: [RoundRealPipe],
-  providers: []
+  providers: [],
+  directives: [MaterializeDirective]
 })
 export class CircleTableComponent implements OnInit {
 

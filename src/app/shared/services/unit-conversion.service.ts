@@ -25,6 +25,17 @@ const BOUNDARIES = { // very important that the x and y directions preserve the 
   deltaR: 0.1 // cm; radial distance from a track within which a "dot" in the grid will be activated
 };
 
+const MOMENTUM_DIAGRAM_BOUNDARIES = {
+  height: 200,
+  width: 200,
+  heightDisplay: 150, // heightDisplay = yminPx - ymaxPx
+  widthDisplay: 150, // widthDisplay = xmaxPx - xminPx
+  xminPx: 25,
+  xmaxPx: 175,
+  yminPx: 175,
+  ymaxPx: 25
+}
+
 const INTERACTION_REGION = {// this is the region within which the interaction point can occur
   xmin: -1,
   xmax: 1,
@@ -87,7 +98,8 @@ export class UnitConversionService {
   }
 
   getBoundaries(){
-    var promise = Promise.resolve(BOUNDARIES);
+    var promise = Promise.resolve(
+      {boundaries: BOUNDARIES, momentumDiagramBoundaries: MOMENTUM_DIAGRAM_BOUNDARIES});
     return Observable.fromPromise(promise);
   }
 

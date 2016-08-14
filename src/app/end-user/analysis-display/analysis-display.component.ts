@@ -9,6 +9,7 @@ import {CircleItemComponent} from '../circle-item';
 import {EventComponent} from '../event';
 import {CircleTableComponent} from '../circle-table';
 import {AxisComponent} from '../axis';
+import {MomentumAxisComponent} from '../momentum-axis';
 
 import {EventDisplayService} from '../../shared/services/event-display.service';
 import {UnitConversionService} from '../../shared/services/unit-conversion.service';
@@ -35,10 +36,15 @@ import {Event} from '../../shared/models/event';
     EventComponent,
     CircleTableComponent,
     AxisComponent,
+    MomentumAxisComponent,
     MaterializeDirective
   ],
 })
 export class AnalysisDisplayComponent implements OnInit {
+
+  // Should make circles and dots objects with methods; then they can 'do' things
+  // to themselves, like set hovering, selecting dots, etc.;
+  // could refactor this on the next go-around....
 
   //@Input() event: Event;
   //@Input() numberEventsRequested: any;
@@ -48,13 +54,14 @@ export class AnalysisDisplayComponent implements OnInit {
 
   private event: Event;
   private eventJSON: any;
-  private numberEventsRequested = 0;
+  private circleChange = 1;//changed when a circle is changed...to wake up one or more components....
   private svgRegion: any;
 
   private dots: any;
   private circles = [];
   private numberCircles = 0;
   private boundaries: any;
+  private momentumDiagramBoundaries: any;
   private interactionRegion: any;
   private interactionLocation: any;
   private eventDisplay: any;
@@ -80,6 +87,7 @@ export class AnalysisDisplayComponent implements OnInit {
       updateData=> {
         this.editCircleProperty(updateData);
         this.updateCircleTangentAngles();
+        this.circleChange = -this.circleChange;
       }
     );
 
@@ -94,7 +102,8 @@ export class AnalysisDisplayComponent implements OnInit {
       () => console.log("Grid fetched"));
     this.unitConversionService.getBoundaries().subscribe(
       boundaries => {
-        this.boundaries = boundaries;
+        this.boundaries = boundaries.boundaries;
+        this.momentumDiagramBoundaries = boundaries.momentumDiagramBoundaries;
       },
       err => console.log("ERROR", err),
       () => console.log("Boundaries fetched"));
@@ -183,6 +192,10 @@ export class AnalysisDisplayComponent implements OnInit {
     }
   }
 
+  selectDotByIndex(index: number){
+    this.dots[index].useForFit = true;
+  }
+
   deselectDot(id: any){
     console.log('inside deselectDot');
     console.log(id);
@@ -195,6 +208,10 @@ export class AnalysisDisplayComponent implements OnInit {
     if (index !== null) {
       this.dots[index].useForFit = false;
     }
+  }
+
+  deselectDotByIndex(index: number){
+    this.dots[index].useForFit = false;
   }
 
   dotSelected(params: any) {
@@ -228,6 +245,7 @@ export class AnalysisDisplayComponent implements OnInit {
       if (this.numberCircles >= 2) {
         this.showAxes = true;
         this.updateCircleTangentAngles();
+        this.circleChange = -this.circleChange;
       }
     }
 
@@ -237,15 +255,54 @@ export class AnalysisDisplayComponent implements OnInit {
   // 'hover', 'unhover', 'delete', 'toggleRotationDirection', 'toggleIncomingOutgoing'
 
 
+  /*
+
+   format for circle objects:
+
+   circleDataPx = {
+   xcPx: center.x,
+   ycPx: center.y,
+   rPx:  r,
+   xc:   circleDatacm.xc,
+   yc:   circleDatacm.yc,
+   r:    circleDatacm.r,
+   CW:   true,
+   incoming: true,
+   hovered: false,
+   dotIndices: dotIndices,
+   theta: null// eventually the (approx.) angle (in radians) of the momentum vector
+   };
+
+   format for grid (or 'dot') objects:
+
+   grid:
+   {
+   id:     index,
+   activated: false,
+   x:         coordsPx.x,
+   y:         coordsPx.y,
+   xcm:       x,
+   ycm:       y,
+   useForFit: false,
+   }
+
+   */
+
+
   hoverCircle(i: number) {
     if (this.circles[i]!==undefined) {// in case the circle was deleted in the meantime, or something
       this.circles[i].hovered = true;
+      this.clearDotsForFit();
+      for (let dotIndex of this.circles[i].dotIndices){
+        this.selectDotByIndex(dotIndex);
+      }
     }
   }
 
   unhoverCircle(i: number) {
     if (this.circles[i]!==undefined) {// in case the circle was deleted in the meantime, or something
       this.circles[i].hovered = false;
+      this.clearDotsForFit();
     }
   }
 
@@ -257,6 +314,7 @@ export class AnalysisDisplayComponent implements OnInit {
       if (this.numberCircles < 2) {
         this.showAxes = false;
         this.updateCircleTangentAngles();
+        this.circleChange = -this.circleChange;
       }
     }
   }

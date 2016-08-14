@@ -20,6 +20,7 @@ export class AxisComponent implements OnInit {
   constructor(private unitConversionService:UnitConversionService) {}
 
   ngOnInit() {
+    console.log('inside axis component');
     console.log(this.boundaries);
     console.log(this.interactionLocation);
     this.computeAxisCoordinates();

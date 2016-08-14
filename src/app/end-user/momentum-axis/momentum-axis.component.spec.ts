@@ -10,11 +10,11 @@ import {
   async, inject
 } from '@angular/core/testing';
 
-import { AxisComponent } from './axis.component';
+import { MomentumAxisComponent } from './momentum-axis.component';
 
-describe('Component: Axis', () => {
+describe('Component: MomentumAxis', () => {
   it('should create an instance', () => {
-    //let component = new AxisComponent();
-    //expect(component).toBeTruthy();
+    let component = new MomentumAxisComponent();
+    expect(component).toBeTruthy();
   });
 });
