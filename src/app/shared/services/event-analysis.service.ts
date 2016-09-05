@@ -58,8 +58,9 @@ export class EventAnalysisService {
    * @name circleFitter
    * @input data has two lists: data.x and data.y
    * @returns (x0, y0) and r (in cm) for the best-fit circle
-   * ADD SOME ERROR CHECKING!!!!  Need to check for colinear points, and that N >= 3.
+   * @algorithm: http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
    *
+   * @note: the routine checks for colinear points, and that N >= 3.
    */
   circleFitter(data) {
     var xBar = this.mean(data.x);

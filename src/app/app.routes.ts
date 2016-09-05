@@ -1,7 +1,8 @@
 import { provideRouter, RouterConfig } from '@angular/router';
 
 import { EndUserRoutes } from './end-user/end-user.routes';
-import {AnalysisDisplayComponent} from './end-user/analysis-display';
+import { AuthenticationRoutes } from './authentication/authentication.routes';
+//import {AnalysisDisplayComponent} from './end-user/analysis-display';
 
 //import { AdminRoutes } from './admin/admin.routes';
 //import { ReadingsComponent } from './end-user/readings/readings.component';
@@ -21,6 +22,7 @@ import {AnalysisDisplayComponent} from './end-user/analysis-display';
 export const routes: RouterConfig = [
 //  { path: '', redirectTo: 'login', terminal: true },
 //  { path: 'temp', component: AnalysisDisplayComponent },
+  ...AuthenticationRoutes,
   ...EndUserRoutes,
 ];
 

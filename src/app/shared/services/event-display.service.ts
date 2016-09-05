@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs/Subject';
 
-import {Http, Response} from '@angular/http';
+import {Http, Response, Headers} from '@angular/http';
 
 import {Observable} from 'rxjs/Rx';
 
 import {EventUrl} from './urls';
+import {EventTypeUrl} from './urls';
+
 import {Event} from '../models/event';
 import {UnitConversionService} from './unit-conversion.service';
 
@@ -22,11 +24,55 @@ export class EventDisplayService {
     private http:Http,
     private unitConversionService:UnitConversionService) {}
 
+  // this looks helpful for using tokens: https://github.com/auth0-blog/angular2-http
+  // also: http://stackoverflow.com/questions/34464108/angular2-set-headers-for-every-request
+  // ...and: https://auth0.com/blog/angular-2-series-part-3-using-http/
+  // request options (from Angular 2 docs; experimental): https://angular.io/docs/ts/latest/api/http/index/RequestOptions-class.html
+
   getEvent(): Observable<Event> {
+    // the following docs are very helpful for wiring up the authentication with a
+    // jwt on both the server and client side:
+    //   client side: https://medium.com/@blacksonic86/angular-2-authentication-revisited-611bf7373bf9#.jelvdws38
+    //   server side: http://getblimp.github.io/django-rest-framework-jwt/
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+    console.log('here is authToken:');
+    console.log(authToken);
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    console.log(headers);
+    console.log(EventTypeUrl);
+
     return this.http
-      .get(EventUrl)
+      .get(EventUrl, {headers})
       .map(response => response.json());
   }
+  
+  // the following is NOT WORKING (but it is probably also not needed....);
+  // it returns an error: 'Unexpected token o in JSON at position 1';
+  // the issue seems to be that the I am doing res.json() on something that is
+  // already a json object (not a string) and so does not need to be parsed;
+  // see here: http://stackoverflow.com/questions/38380462/syntaxerror-unexpected-token-o-in-json-at-position-1
+  getEventTypes(): Observable<Event> {
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+    console.log('here is authToken:');
+    console.log(authToken);
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    console.log(headers);
+    console.log(EventTypeUrl);
+
+    return this.http
+      .get(EventTypeUrl, {headers})
+      .map(res => res.json());
+  }
+
+
 
   // Service message command
   announceGridActivation(gridIndices: number[]) {
@@ -392,8 +438,5 @@ export class EventDisplayService {
     // I don't think it should ever get here, but just in case....
     return false;
   }
-
-
-
 
 }
