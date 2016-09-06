@@ -28,7 +28,7 @@
             </div>
             <div *ngIf="signinServerError" class="row">
               <div class="input-field col s12 login-error red-text text-darken-2 red lighten-3">
-                {{signinServerError._body}}
+                {{signinServerError}}
               </div>
             </div>
           </div>
@@ -49,3 +49,8 @@
     </div>
   </div>
 </div>
+
+
+<button
+  class="waves-effect waves-light btn"
+  (click) = "onRegister()">Create New User</button>

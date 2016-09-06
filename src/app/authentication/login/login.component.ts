@@ -68,12 +68,33 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/end-user']);
         },
         (error) => {
+          let errorDict = JSON.parse(error._body);
+          console.log('there was an error');
+          console.log(errorDict);
+          // if there are multiple errors, only the last one will be shown;
+          // this will allow the user to fix one error at a time, which isn't so bad....
+          for (var key in errorDict) {
+            this.signinServerError = errorDict[key][0];//the text of the error is the only entry in an array....
+            console.log(errorDict[key]);
+          }
+        });
+    }
+  }
+
+  onRegister() {
+    this.userService.register('newUser2', 'password123', 'user@user.com', 'New2', 'User2')
+      .subscribe(
+        (result) => {
+          console.log(result)
+        },
+        (error) => {
           console.log('there was an error');
           console.log(error);
           this.signinServerError = error;
         });
-    }
   }
+
+
 
 
 }

@@ -8,6 +8,7 @@ import { Http, Headers } from '@angular/http';
 
 import {EventTypeUrl} from './urls';
 import {LoginUrl} from './urls';
+import {AccountsUrl} from './urls';
 
 @Injectable()
 export class UserService {
@@ -18,11 +19,37 @@ export class UserService {
     this.loggedIn = !!localStorage.getItem('auth_token');
   }
 
+  register(username, password, email, firstName, lastName) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    return this.http
+      .post(
+        AccountsUrl,
+        JSON.stringify({
+          'username': username,
+          'password': password,
+          'email': email,
+          'first_name': firstName,
+          'last_name': lastName
+        }),
+      { headers }
+      )
+      .map(res => res.json());
+  }
+
   login(username, password) {
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    // WORKING HERE...need to find the right api endpt for logging in....
+    /*
+     WORKING HERE...
+     to do next:
+     - put the user's name at the top right
+     - add a 'sign in' page for creating a new account
+     - add a logout button on the top right
+     - add the ability to save and retrieve events
+    */
     return this.http
       .post(
         LoginUrl,

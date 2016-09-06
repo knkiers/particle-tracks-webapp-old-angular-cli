@@ -54,6 +54,7 @@ const barrels: string[] = [
   'app/end-user/axis',
   'app/end-user/momentum-axis',
   'app/authentication/login',
+  'app/authentication/signup',
   /** @cli-barrel */
 ];
 

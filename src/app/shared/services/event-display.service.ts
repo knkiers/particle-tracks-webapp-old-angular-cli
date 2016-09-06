@@ -28,7 +28,6 @@ export class EventDisplayService {
   // also: http://stackoverflow.com/questions/34464108/angular2-set-headers-for-every-request
   // ...and: https://auth0.com/blog/angular-2-series-part-3-using-http/
   // request options (from Angular 2 docs; experimental): https://angular.io/docs/ts/latest/api/http/index/RequestOptions-class.html
-
   getEvent(): Observable<Event> {
     // the following docs are very helpful for wiring up the authentication with a
     // jwt on both the server and client side:
@@ -49,7 +48,7 @@ export class EventDisplayService {
       .get(EventUrl, {headers})
       .map(response => response.json());
   }
-  
+
   // the following is NOT WORKING (but it is probably also not needed....);
   // it returns an error: 'Unexpected token o in JSON at position 1';
   // the issue seems to be that the I am doing res.json() on something that is
