@@ -81,20 +81,5 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onRegister() {
-    this.userService.register('newUser2', 'password123', 'user@user.com', 'New2', 'User2')
-      .subscribe(
-        (result) => {
-          console.log(result)
-        },
-        (error) => {
-          console.log('there was an error');
-          console.log(error);
-          this.signinServerError = error;
-        });
-  }
-
-
-
 
 }

@@ -2,9 +2,21 @@
   <div class="nav-wrapper">
     <a href="#" class="brand-logo">Particle Tracks</a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a >Option 1</a></li>
-      <li><a >Option 2</a></li>
-      <li><a >Option 3</a></li>
+      <li *ngIf="currentUser">
+          +{{currentUser}}
+      </li>
+      <li>
+        <a *ngIf="isLoggedIn()"
+           (click)="logout()">
+          <i class="material-icons">power_settings_new</i>
+        </a>
+      </li>
+      <li>
+        <a *ngIf="!isLoggedIn()"
+           [routerLink]="['/login']">
+          <i class="material-icons">perm_identity</i>
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { Http, Headers } from '@angular/http';
+
+import { Subject }    from 'rxjs/Subject';
+
+
 //import localStorage from 'localStorage';
 
 // useful authentication resource:
@@ -14,6 +18,13 @@ import {AccountsUrl} from './urls';
 export class UserService {
 
   private loggedIn = false;
+
+  // Observable user source
+  private userAnnouncedSource = new Subject<any>();
+
+  // Observable user stream
+  userAnnounced$ = this.userAnnouncedSource.asObservable();
+
 
   constructor(private http: Http) {
     this.loggedIn = !!localStorage.getItem('auth_token');
@@ -62,17 +73,39 @@ export class UserService {
         console.log(res);
         localStorage.setItem('auth_token', res.token);
         this.loggedIn = true;
+        this.announceUser(username);
         console.log(localStorage.getItem('auth_token'));
+
+        // TODO:
+        // probably after getting the token, should go back and get all
+        // of the user's data, so can create a User object...it's kind of
+        // hinky to take the typed-in username as the user's name...plus we
+        // lose it if the page gets refreshed....
+
       });
   }
 
   logout() {
     localStorage.removeItem('auth_token');
     this.loggedIn = false;
+    this.userAnnouncedSource.next(null);
+    //this.announceLogOut();
   }
+
+
+
 
   isLoggedIn() {
     return this.loggedIn;
   }
+
+  // Service message command
+  announceUser(username) {
+    console.log('announcing user! or lack thereof....');
+    //console.log(this.currentUser);
+    this.userAnnouncedSource.next(username);
+  }
+
+
 
 }
