@@ -144,6 +144,26 @@ export class AnalysisDisplayComponent implements OnInit {
       );
   }
 
+  saveEvent() {
+    //probably need to tweak this list, but OK for now....
+    let eventData = {
+      event: this.event,
+      circles: this.circles,
+      eventJSON: this.eventJSON,
+      eventType: this.eventTypeJSON,
+      svgRegion: this.svgRegion,
+      dots: this.dots
+    };
+
+    this.eventAnalysisService.saveAnalyzedEvent('saved event!', eventData)
+      .subscribe(
+        savedEvent => {
+          console.log(savedEvent);
+          //console.log(JSON.parse(savedEvent));
+        }
+      );
+  }
+
   initializeEvent() {
     this.interactionLocation = {
       x: Math.random() * (this.interactionRegion.xmax - this.interactionRegion.xmin) + this.interactionRegion.xmin,

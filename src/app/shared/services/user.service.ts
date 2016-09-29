@@ -32,6 +32,7 @@ export class UserService {
 
   register(username, password, email, firstName, lastName) {
     let headers = new Headers();
+    let emptyList = [];
     headers.append('Content-Type', 'application/json');
 
     return this.http
@@ -42,7 +43,8 @@ export class UserService {
           'password': password,
           'email': email,
           'first_name': firstName,
-          'last_name': lastName
+          'last_name': lastName,
+          'analyzed_events': emptyList
         }),
       { headers }
       )
@@ -56,9 +58,6 @@ export class UserService {
     /*
      WORKING HERE...
      to do next:
-     - put the user's name at the top right
-     - add a 'sign in' page for creating a new account
-     - add a logout button on the top right
      - add the ability to save and retrieve events
     */
     return this.http

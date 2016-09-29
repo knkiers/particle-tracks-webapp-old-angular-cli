@@ -1,35 +1,20 @@
 import { Injectable } from '@angular/core';
 
+import {Http, Response, Headers} from '@angular/http';
+
+import {AnalyzedEventsUrl} from './urls';
+
 import {UnitConversionService} from './unit-conversion.service';
 
 @Injectable()
 export class EventAnalysisService {
 
-  constructor(private unitConversionService:UnitConversionService) {}
+  constructor(private http:Http,
+              private unitConversionService:UnitConversionService) {}
 
   /*
    looks at the 'gridItemList' array and determines which have been selected for fitting a circle;
    returns a data list suitable for sending to circleFitter
-
-
-
-
-   ......WORKING HERE......
-
-  how to inject one service into another...?!? >>>inject the services into the comp
-  and then import the one into the other; can't import them into each other (circular
-  dependency); CREATE new unit-conversion service that has all the cm to Px type stuff
-  and import that into the other two services....
-
-   ...first: add xcm and ycm!
-   ...maybe translate entire grid over and then set all of them to activated or somethingl
-
-   >>> translate the appropriate funcionality over from the AnalyzeEvent and
-   DisplayEvent services so that can form the grid and fit a circle to selected points;
-
-
-
-
    */
   fitCircleToData(dots, boundaries) {
     var circleInputData = this.gatherDataFromDots(dots);
@@ -207,6 +192,30 @@ export class EventAnalysisService {
     }
     return theta;
   }
+
+
+
+  saveAnalyzedEvent(title: string, data) {
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+    let eventData = JSON.stringify(data);
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    return this.http
+      .post(
+        AnalyzedEventsUrl,
+        JSON.stringify({
+          'title': title,
+          'event_data': eventData
+        }),
+        { headers }
+      )
+      .map(res => res.json());
+  }
+
+
 
 
   /*

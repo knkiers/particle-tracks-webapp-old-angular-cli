@@ -4,3 +4,4 @@ export const EventUrl = BaseURL + "/api/generateevent/";
 export const EventTypeUrl = BaseURL + "/api/decaytypelist/";
 export const LoginUrl = BaseURL + "/api-token-auth/";
 export const AccountsUrl = BaseURL + "/accounts/";
+export const AnalyzedEventsUrl = BaseURL + "/analyzedevents/";
