@@ -9,7 +9,8 @@
 const map: any = {
   'materialize-css': 'materialize-src',
   'materialize': 'vendor/angular2-materialize',
-  'angular2-materialize': 'vendor/angular2-materialize'
+  'angular2-materialize': 'vendor/angular2-materialize',
+  'angular2-jwt': 'vendor/angular2-jwt/angular2-jwt.js'
 };
 
 /** User packages configuration. */
@@ -20,6 +21,9 @@ const packages: any = {
   'materialize': {
     'main': 'dist/materialize-directive.js',
     //'defaultExtension': 'js'
+  },
+  'angular2-jwt': {
+    defaultExtension: 'js'
   }
 };
 
@@ -55,6 +59,7 @@ const barrels: string[] = [
   'app/end-user/momentum-axis',
   'app/authentication/login',
   'app/authentication/signup',
+  'app/end-user/list-saved-events',
   /** @cli-barrel */
 ];
 

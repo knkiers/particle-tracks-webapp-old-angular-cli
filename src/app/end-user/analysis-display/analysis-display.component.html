@@ -114,3 +114,41 @@
 </div>
 
 <button class="btn" (click)="saveEvent()">Save Event</button>
+
+<a materialize="leanModal"
+   class="waves-effect waves-light btn secondary-content modal-trigger"
+   href="#modalBrowseSavedEvents"
+   (click)="getEvents()"
+>
+  Browse Saved Events
+</a>
+
+<!-- Modal Structure -->
+<div id="modalBrowseSavedEvents" class="modal">
+  <div class="modal-content">
+    <h5>Saved Events</h5>
+    <app-list-saved-events
+      [eventList]="userEvents"
+      (onFinished)="onModalFinished($event)"
+      [modalID]="'modalBrowseSavedEvents'">
+    </app-list-saved-events>
+  </div>
+  <div class="modal-footer">
+    <a class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+  </div>
+</div>
+
+<!--
+<div class="container">
+  <div class="row">
+    <div *ngFor="let reading of readings" class="col s12">
+      <app-reading-item
+        [includeBackButton]="includeBackButton"
+        [reading]="reading"
+        [practices]="reading.practices"
+        [resourceCollections]="reading.resourceCollections">
+      </app-reading-item>
+    </div>
+  </div>
+</div>
+-->

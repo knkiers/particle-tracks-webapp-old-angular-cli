@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 
 import { Subject }    from 'rxjs/Subject';
-
+import { JwtHelper } from 'angular2-jwt';
+// NOTE: only using angular2-jwt to decode the jwt; in principle this package could
+//       be used much more extensively
 
 //import localStorage from 'localStorage';
 
@@ -16,6 +18,10 @@ import {AccountsUrl} from './urls';
 
 @Injectable()
 export class UserService {
+
+  jwtHelper: JwtHelper = new JwtHelper();
+  decoded: any;
+  userID: any;
 
   private loggedIn = false;
 
@@ -74,6 +80,10 @@ export class UserService {
         this.loggedIn = true;
         this.announceUser(username);
         console.log(localStorage.getItem('auth_token'));
+        this.decoded = this.jwtHelper.decodeToken(localStorage.getItem('auth_token'));
+        console.log(this.decoded);
+        this.userID = this.decoded.user_id;
+        console.log(this.userID);
 
         // TODO:
         // probably after getting the token, should go back and get all
@@ -91,7 +101,9 @@ export class UserService {
     //this.announceLogOut();
   }
 
-
+  fetchUserID() {
+    return this.userID;
+  }
 
 
   isLoggedIn() {

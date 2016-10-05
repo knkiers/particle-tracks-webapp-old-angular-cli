@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import {Http, Response, Headers} from '@angular/http';
 
-import {AnalyzedEventsUrl} from './urls';
+import {AnalyzedEventsUrl, UserEventsUrl} from './urls';
 
 import {UnitConversionService} from './unit-conversion.service';
 
@@ -213,6 +213,33 @@ export class EventAnalysisService {
         { headers }
       )
       .map(res => res.json());
+  }
+
+  getAnalyzedEvents() {
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    return this.http
+      .get(UserEventsUrl, {headers})
+      .map(response => response.json());
+
+  }
+
+  getAnalyzedEvent(id) {
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    console.log(id);
+    return this.http
+      .get(AnalyzedEventsUrl+id+'/', {headers})
+      .map(response => response.json());
+
   }
 
 
