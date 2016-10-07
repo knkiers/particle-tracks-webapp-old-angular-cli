@@ -24,6 +24,7 @@ export class ListSavedEventsComponent implements OnInit {
   // WORKING HERE!!!!!!
   // actually, this method should go in analysis-display...;
   // can just pass the event id in the closeModal event emitter!
+  /*
   getEvent(id) {
     // get the event; then close the modal....
     console.log('about to get event #....');
@@ -38,8 +39,9 @@ export class ListSavedEventsComponent implements OnInit {
       () => console.log("event fetched"));
 
   }
+  */
 
-  closeModal(modalID: string) {
+  closeModalFetchEvent(eventID) {
     /*
      This emits an event that the parent component listens for; then the parent uses
      the modalID to close the modal.
@@ -48,7 +50,7 @@ export class ListSavedEventsComponent implements OnInit {
      declare var $: any;
      */
     console.log('about to emit the close signal');
-    this.onFinished.emit(modalID);
+    this.onFinished.emit(eventID);
   }
 
 

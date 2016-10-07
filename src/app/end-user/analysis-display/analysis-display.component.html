@@ -113,7 +113,9 @@
   </div>
 </div>
 
-<button class="btn" (click)="saveEvent()">Save Event</button>
+<div *ngIf="editModeOn">
+  <button class="btn" (click)="saveEvent()">Save Event</button>
+</div>
 
 <a materialize="leanModal"
    class="waves-effect waves-light btn secondary-content modal-trigger"

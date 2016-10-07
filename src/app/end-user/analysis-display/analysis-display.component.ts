@@ -160,8 +160,10 @@ export class AnalysisDisplayComponent implements OnInit {
       svgRegion: this.svgRegion,
       dots: this.dots
     };
+    let filename = this.event.human_readable_name;
+    console.log(this.event.human_readable_name);
 
-    this.eventAnalysisService.saveAnalyzedEvent('saved event!', eventData)
+    this.eventAnalysisService.saveAnalyzedEvent(filename, eventData)
       .subscribe(
         savedEvent => {
           console.log(savedEvent);
@@ -460,12 +462,27 @@ export class AnalysisDisplayComponent implements OnInit {
 
   // the following can be used to close a modal programmatically....
   // (see Galilee webapp -- update resource collection)
-  onModalFinished(modalID: string){
+  onModalFinished(eventID: string){
     // Note: must include the following declaration (above) in component:
     //          declare var $: any;
     console.log('about to close the modal....');
-    console.log('#'+modalID);
-    $('#'+modalID).closeModal();
+    console.log('#modalBrowseSavedEvents');
+    $('#modalBrowseSavedEvents').closeModal();
+    this.getAnalyzedEvent(eventID);
+  }
+
+  getAnalyzedEvent(id) {
+    // get the analyzed event from the database
+    console.log('about to get event #....');
+    console.log(id);
+
+    this.eventAnalysisService.getAnalyzedEvent(id).subscribe(
+      eventData => {
+        console.log(eventData);
+      },
+      err => console.log("ERROR", err),
+      () => console.log("event fetched"));
+
   }
 
 

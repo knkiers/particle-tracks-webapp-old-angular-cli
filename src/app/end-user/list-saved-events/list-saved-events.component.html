@@ -6,6 +6,6 @@
 <div *ngIf="eventList">
   <div *ngFor="let event of eventList">
     {{event.title}} {{event.id}} {{event.created}}
-    <a (click)="getEvent(event.id)"> Load </a>
+    <a (click)="closeModalFetchEvent(event.id)"> Load </a>
   </div>
 </div>

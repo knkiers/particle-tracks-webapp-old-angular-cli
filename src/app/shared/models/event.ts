@@ -5,4 +5,5 @@ export class Event {
   decay_products: any;
   theta_lab: any;
   xi_lab: any;
+  human_readable_name: string;
 }
