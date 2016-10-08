@@ -8,15 +8,19 @@
   <div class="row">
     <div class="card col s12">
       <div class="card-content ">
-        <div class="card-title">
-          <div *ngIf="event">
-            <div [innerHTML]="event.name">
-            </div>
-          </div>
-          <div *ngIf="!event">
+        <span class="card-title">
+          <span *ngIf="event">
+            <span [innerHTML]="event.name">
+            </span>
+          </span>
+          <span *ngIf="!event">
             No Process Selected
-          </div>
-        </div>
+          </span>
+        </span>
+        <span class="right">
+          <!-- Dropdown Trigger -->
+          <a materialize="dropdown" class='dropdown-button btn' data-activates='dropdownActions'>Actions</a>
+        </span>
 
         <div class="row">
           <div class ="col s8">
@@ -26,7 +30,7 @@
                       [attr.y]="boundaries.ymaxPx"
                       [attr.width]="boundaries.widthDisplay"
                       [attr.height]="boundaries.heightDisplay"
-                      style="fill:blue;stroke:pink;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
+                      style="fill:blue;stroke:grey;stroke-width:5;fill-opacity:0.1;stroke-opacity:0.9" />
 
                 <g *ngFor="let dot of dots" app-grid-item
                    [colourModeOn]="colourModeOn"
@@ -113,10 +117,43 @@
   </div>
 </div>
 
+<!-- Dropdown Structure -->
+<ul id='dropdownActions' class='dropdown-content'>
+  <li>
+    <a materialize="leanModal"
+       class="modal-trigger"
+       href="#modalBrowseSavedEvents"
+       (click)="getEvents()"
+    >
+      Browse Saved Events
+    </a>
+  </li>
+  <div *ngIf="editModeOn">
+    <li>
+      <a (click)="saveEvent(false)">Save Event</a>
+    </li>
+    <li>
+      <a materialize="leanModal"
+         class="modal-trigger"
+         href="#modalSaveFirstWarning">
+        Get New Event
+      </a>
+    </li>
+  </div>
+</ul>
+
+<!--
 <div *ngIf="editModeOn">
   <button class="btn" (click)="saveEvent()">Save Event</button>
+  <a materialize="leanModal"
+     class="waves-effect waves-light btn secondary-content modal-trigger"
+     href="#modalSaveFirstWarning">
+      Get New Event
+  </a>
 </div>
+-->
 
+<!--
 <a materialize="leanModal"
    class="waves-effect waves-light btn secondary-content modal-trigger"
    href="#modalBrowseSavedEvents"
@@ -124,6 +161,8 @@
 >
   Browse Saved Events
 </a>
+-->
+
 
 <!-- Modal Structure -->
 <div id="modalBrowseSavedEvents" class="modal">
@@ -137,6 +176,18 @@
   </div>
   <div class="modal-footer">
     <a class="modal-action modal-close waves-effect waves-green btn-flat">Dismiss</a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modalSaveFirstWarning" class="modal">
+  <div class="modal-content">
+    <h5>Save Current Event First?</h5>
+    Unsaved data will be lost....
+  </div>
+  <div class="modal-footer">
+    <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="fetchNewEvent()">Don't Save</a>
+    <a class="modal-action modal-close waves-effect waves-green btn-flat" (click)="saveEvent(true)">Save Event First</a>
   </div>
 </div>
 

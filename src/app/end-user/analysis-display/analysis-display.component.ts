@@ -20,6 +20,8 @@ import { CircleBindingService } from '../circle-binding.service';
 
 import {Event} from '../../shared/models/event';
 
+// QUESTION: should js-base64 be added to package.json?
+
 declare var $: any; // for using jQuery within this angular component
 
 @Component({
@@ -58,7 +60,7 @@ export class AnalysisDisplayComponent implements OnInit {
 
   private event: Event;
   private eventJSON: any;
-  private eventType: any;
+  //private eventType: any;
   private eventTypeJSON: any;
   private circleChange = 1;//changed when a circle is changed...to wake up one or more components....
   private svgRegion: any;
@@ -123,15 +125,16 @@ export class AnalysisDisplayComponent implements OnInit {
   }
 
   fetchNewEvent() {
+    this.turnOffEditMode();
     this.event = null;//forces a redraw of the event when the new one comes in
     this.eventDisplayService.getEvent()
       .subscribe(
         event => {
           this.eventJSON = event;
-          console.log(JSON.parse(this.eventJSON));
+          //console.log(JSON.parse(this.eventJSON));
           //console.log(JSON.parse(this.event));
           this.event = JSON.parse(this.eventJSON);
-          console.log(this.event);
+          //console.log(this.event);
           this.resetCircles();
           this.initializeEvent();
         }
@@ -144,13 +147,13 @@ export class AnalysisDisplayComponent implements OnInit {
       .subscribe(
         eventType => {
           this.eventTypeJSON = eventType;
-          console.log(JSON.parse(this.eventTypeJSON));
+          //console.log(JSON.parse(this.eventTypeJSON));
           //console.log(JSON.parse(this.event));
         }
       );
   }
 
-  saveEvent() {
+  saveEvent(fetchAfterSave: boolean) {
     //probably need to tweak this list, but OK for now....
     let eventData = {
       event: this.event,
@@ -158,29 +161,41 @@ export class AnalysisDisplayComponent implements OnInit {
       eventJSON: this.eventJSON,
       eventType: this.eventTypeJSON,
       svgRegion: this.svgRegion,
-      dots: this.dots
+      dots: this.dots,
+      boundaries: this.boundaries,
+      momentumDiagramBoundaries: this.momentumDiagramBoundaries,
+      interactionRegion: this.interactionRegion,
+      interactionLocation: this.interactionLocation,
+      eventDisplay: this.eventDisplay,
+      bFieldStrength: this.bFieldStrength,
+      bFieldDirection: this.bFieldDirection
     };
     let filename = this.event.human_readable_name;
-    console.log(this.event.human_readable_name);
-
     this.eventAnalysisService.saveAnalyzedEvent(filename, eventData)
       .subscribe(
         savedEvent => {
-          console.log(savedEvent);
+          //console.log(savedEvent);
           this.getEvents();// update list of all events owned by user
           //console.log(JSON.parse(savedEvent));
+          if (fetchAfterSave) {
+            this.fetchNewEvent();
+          }
         }
       );
   }
 
   getEvents() {
+    var date;
     this.eventAnalysisService.getAnalyzedEvents()
       .subscribe(
         userEvents => {
-          console.log(userEvents);
+          //console.log(userEvents);
           this.userEvents = JSON.parse(userEvents);
-          console.log(this.userEvents);
-          //console.log(JSON.parse(savedEvent));
+          for (var i in this.userEvents) {
+            date = new Date(this.userEvents[i].created);
+            //console.log(date);
+            this.userEvents[i].created = date;// makes the date a bit more human-readable
+          }
         }
       );
   }
@@ -197,8 +212,8 @@ export class AnalysisDisplayComponent implements OnInit {
       y: Math.random() * (this.interactionRegion.ymax - this.interactionRegion.ymin) + this.interactionRegion.ymin
     }
 
-    console.log('interaction location!');
-    console.log(this.interactionLocation);
+    //console.log('interaction location!');
+    //console.log(this.interactionLocation);
 
     this.eventDisplay = this.eventDisplayService.getStringEventDisplay(
       this.bFieldStrength,
@@ -208,7 +223,7 @@ export class AnalysisDisplayComponent implements OnInit {
       this.interactionLocation,
       this.event);
 
-    console.log(this.eventDisplay);
+    //console.log(this.eventDisplay);
   }
 
   /*
@@ -240,8 +255,8 @@ export class AnalysisDisplayComponent implements OnInit {
   }
 
   selectDot(id: any){
-    console.log('inside selectDot');
-    console.log(id);
+    //console.log('inside selectDot');
+    //console.log(id);
     var index = null;
     for (let i in this.dots){
       if ((this.dots[i].id === id) && (this.dots[i].activated)){
@@ -258,8 +273,8 @@ export class AnalysisDisplayComponent implements OnInit {
   }
 
   deselectDot(id: any){
-    console.log('inside deselectDot');
-    console.log(id);
+    //console.log('inside deselectDot');
+    //console.log(id);
     var index = null;
     for (let i in this.dots){
       if ((this.dots[i].id === id) && (this.dots[i].activated)){
@@ -276,14 +291,14 @@ export class AnalysisDisplayComponent implements OnInit {
   }
 
   dotSelected(params: any) {
-    console.log('parent sensed mouse event!');
-    console.log(params);
+    //console.log('parent sensed mouse event!');
+    //console.log(params);
     this.selectDot(params.id)
   }
 
   dotDeselected(params: any) {
-    console.log('parent sensed mouse event!');
-    console.log(params);
+    //console.log('parent sensed mouse event!');
+    //console.log(params);
     this.deselectDot(params.id)
   }
 
@@ -297,12 +312,12 @@ export class AnalysisDisplayComponent implements OnInit {
      */
     var dataDict = this.eventAnalysisService.fitCircleToData(this.dots, this.boundaries);
     //var circleInputData = this.eventAnalysisService.gatherDataFromDots(this.dots);
-    console.log(dataDict);
+    //console.log(dataDict);
     if (!dataDict.error){
       this.circles.push(dataDict.circle);
       this.clearDotsForFit();
       this.numberCircles = this.circles.length;
-      console.log(this.numberCircles);
+      //console.log(this.numberCircles);
       if (this.numberCircles >= 2) {
         this.showAxes = true;
         this.updateCircleTangentAngles();
@@ -372,7 +387,7 @@ export class AnalysisDisplayComponent implements OnInit {
       this.circles.splice(i,1);
       this.numberCircles = this.circles.length;
       this.clearDotsForFit();
-      console.log(this.numberCircles);
+      //console.log(this.numberCircles);
       if (this.numberCircles < 2) {
         this.showAxes = false;
         this.updateCircleTangentAngles();
@@ -417,8 +432,8 @@ export class AnalysisDisplayComponent implements OnInit {
 
   editCircleProperty(updateData) {
 
-    console.log('inside component');
-    console.log(updateData);
+    //console.log('inside component');
+    //console.log(updateData);
 
     var i = updateData.index;
     var command = updateData.command;
@@ -444,12 +459,15 @@ export class AnalysisDisplayComponent implements OnInit {
   }
 
   turnOnEditMode(){
-    console.log('inside toggle edit mode fn');
+    //console.log('inside toggle edit mode fn');
     if (!this.editModeOn) {
-      console.log('got here');
       this.editModeOn = true;
       this.colourModeOn = true;
     }
+  }
+
+  turnOffEditMode(){
+    this.editModeOn = false;
   }
 
   showEvent(){
@@ -465,23 +483,64 @@ export class AnalysisDisplayComponent implements OnInit {
   onModalFinished(eventID: string){
     // Note: must include the following declaration (above) in component:
     //          declare var $: any;
-    console.log('about to close the modal....');
-    console.log('#modalBrowseSavedEvents');
+    //console.log('about to close the modal....');
+    //console.log('#modalBrowseSavedEvents');
     $('#modalBrowseSavedEvents').closeModal();
     this.getAnalyzedEvent(eventID);
   }
 
   getAnalyzedEvent(id) {
+    var eventNewData;
     // get the analyzed event from the database
-    console.log('about to get event #....');
-    console.log(id);
+    //console.log('about to get event #....');
+    //console.log(id);
 
     this.eventAnalysisService.getAnalyzedEvent(id).subscribe(
       eventData => {
-        console.log(eventData);
+        //console.log(eventData);
+        eventNewData = JSON.parse(eventData.event_data);
+        this.refreshView(eventNewData);
       },
       err => console.log("ERROR", err),
       () => console.log("event fetched"));
+
+  }
+
+  refreshView(eventData) {
+    //console.log(eventData);
+    this.event = eventData.event;
+    this.eventTypeJSON = eventData.eventType;
+    this.svgRegion = eventData.svgRegion;
+    this.eventJSON = eventData.eventJSON;
+    this.circleChange = - this.circleChange;
+    this.dots = eventData.dots;
+    this.circles = eventData.circles;
+    this.clearDotsForFit();
+
+    this.numberCircles = this.circles.length;
+
+    this.boundaries = eventData.boundaries;
+    this.momentumDiagramBoundaries = eventData.momentumDiagramBoundaries;
+    this.interactionRegion = eventData.interactionRegion;
+    this.interactionLocation = eventData.interactionLocation;
+
+    this.eventDisplay = eventData.eventDisplay;
+
+    this.editModeOn = true;
+    this.revealEvent = false;
+    this.colourModeOn = true;
+
+    this.bFieldStrength = eventData.bFieldStrength;
+    this.bFieldDirection = eventData.bFieldDirection;
+
+    if (this.numberCircles >= 2) {
+      this.showAxes = true;
+      this.updateCircleTangentAngles();
+      this.circleChange = -this.circleChange;
+    } else {
+      this.showAxes = false;
+    }
+
 
   }
 

@@ -17,8 +17,17 @@ export class ListSavedEventsComponent implements OnInit {
 
   constructor(private eventAnalysisService:EventAnalysisService) {}
 
+  //date: Date;
   ngOnInit() {
     console.log(this.eventList);
+    /*for (var event of this.eventList) {
+      console.log(event.created);
+      //this.date = new Date(event.created);
+      console.log(this.date);
+    }
+    */
+
+
   }
 
   // WORKING HERE!!!!!!
