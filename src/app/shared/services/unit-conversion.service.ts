@@ -12,8 +12,8 @@ const BOUNDARIES = { // very important that the x and y directions preserve the 
   xmax: 5,  // cm
   ymin: -5, // cm
   ymax: 5,  // cm
-  numGridPointsX: 41, // the number of grid points in the x direction; must be at least 2
-  numGridPointsY: 41,
+  numGridPointsX: 61, // the number of grid points in the x direction; must be at least 2
+  numGridPointsY: 61,
   height: 500,
   width: 500,
   heightDisplay: 400, // heightDisplay = yminPx - ymaxPx
@@ -22,7 +22,7 @@ const BOUNDARIES = { // very important that the x and y directions preserve the 
   xmaxPx: 450, // pixels
   yminPx: 450, // pixels; yminPx is at the bottom of the plot region
   ymaxPx: 50, // pixels
-  deltaR: 0.1 // cm; radial distance from a track within which a "dot" in the grid will be activated
+  deltaR: 0.05 // cm; radial distance from a track within which a "dot" in the grid will be activated
 };
 
 const MOMENTUM_DIAGRAM_BOUNDARIES = {

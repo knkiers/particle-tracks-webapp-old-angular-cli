@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import {MaterializeDirective} from "angular2-materialize";
 
-const RADIUS_ACTIVATED = 4;//px
+const RADIUS_ACTIVATED = 3;//px
 const RADIUS_NOT_ACTIVATED = 0.5;
 const STROKE_WIDTH_USED_FOR_FIT = 2;
 const STROKE_WIDTH_NOT_USED_FOR_FIT = 0;
