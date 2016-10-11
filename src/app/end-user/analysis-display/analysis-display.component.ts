@@ -20,7 +20,14 @@ import { CircleBindingService } from '../circle-binding.service';
 
 import {Event} from '../../shared/models/event';
 
-// QUESTION: should js-base64 be added to package.json?
+// 1. QUESTION: should js-base64 be added to package.json?
+// 2. TODO: If jwt times out (currently set for 3 hrs), give an error message
+//    ("session timed out") and redirect to login page or something.  Currently it just
+//    crashes...!!
+// 3. Create a User object; if the user's token is still valid, but the user
+//    refreshed the page or something, go fetch their info from the db and refresh
+//    the user's login name in the nav bar, etc.
+
 
 declare var $: any; // for using jQuery within this angular component
 
@@ -126,6 +133,7 @@ export class AnalysisDisplayComponent implements OnInit {
 
   fetchNewEvent() {
     this.turnOffEditMode();
+    this.resetAxes();
     this.event = null;//forces a redraw of the event when the new one comes in
     this.eventDisplayService.getEvent()
       .subscribe(
@@ -186,6 +194,10 @@ export class AnalysisDisplayComponent implements OnInit {
 
   getEvents() {
     var date;
+    var options = {
+      year: "numeric", month: "short",
+      day: "numeric", hour: "2-digit", minute: "2-digit"
+    };
     this.eventAnalysisService.getAnalyzedEvents()
       .subscribe(
         userEvents => {
@@ -194,7 +206,7 @@ export class AnalysisDisplayComponent implements OnInit {
           for (var i in this.userEvents) {
             date = new Date(this.userEvents[i].created);
             //console.log(date);
-            this.userEvents[i].created = date;// makes the date a bit more human-readable
+            this.userEvents[i].created = date.toLocaleTimeString("en-us", options);// makes the date a bit more human-readable
           }
         }
       );
@@ -244,6 +256,10 @@ export class AnalysisDisplayComponent implements OnInit {
 
   resetCircles(){
     this.circles = [];
+  }
+
+  resetAxes(){
+    this.showAxes = false;
   }
 
   clearDotsForFit(){

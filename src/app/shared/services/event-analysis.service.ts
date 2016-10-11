@@ -242,6 +242,26 @@ export class EventAnalysisService {
 
   }
 
+  submitAnalyzedEvent(title: string, data, id, submit: boolean) {
+    let headers = new Headers();
+    let authToken = localStorage.getItem('auth_token');
+    let eventData = JSON.stringify(data);
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', `JWT ${authToken}`);
+
+    return this.http
+      .put(
+        AnalyzedEventsUrl+id+'/',
+        JSON.stringify({
+          'title': title,
+          'event_data': eventData,
+          'submitted': submit
+        }),
+        { headers }
+      )
+      .map(res => res.json());
+  }
 
 
 
