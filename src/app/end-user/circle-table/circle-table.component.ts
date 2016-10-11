@@ -23,6 +23,7 @@ export class CircleTableComponent implements OnInit {
   // in the dotIndices array to be red/not red via the circle binding service, etc.
 
   @Input() circles: any;
+  @Input() event: any;
 
   constructor(private circleBindingService:CircleBindingService) {}
 
@@ -76,9 +77,14 @@ export class CircleTableComponent implements OnInit {
   circleInfo(i: number){
     console.log(this.circles[i]);
     if(this.circles[i].theta) {
-      console.log('px: ' + 0.3 * 50 * this.circles[i].r * Math.cos(this.circles[i].theta));
-      console.log('py: ' + 0.3 * 50 * this.circles[i].r * Math.sin(this.circles[i].theta));
+      console.log('px: ' + 0.3 * 80 * this.circles[i].r * Math.cos(this.circles[i].theta));
+      console.log('py: ' + 0.3 * 80 * this.circles[i].r * Math.sin(this.circles[i].theta));
     }
+    console.log('parent: ' + this.event.parent.energy_momentum[0] + ' ' + this.event.parent.energy_momentum[1] + ' ' + this.event.parent.energy_momentum[2]);
+    for (var j in this.event.decay_products) {
+      console.log('decay product: ' + this.event.decay_products[j].energy_momentum[0] + ' ' + this.event.decay_products[j].energy_momentum[1] + ' ' + this.event.decay_products[j].energy_momentum[2]);
+    }
+    console.log(this.event);
   }
 
 }
