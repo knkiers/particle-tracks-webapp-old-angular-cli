@@ -1,4 +1,5 @@
-const BaseURL = "http://127.0.0.1:8000";
+//const BaseURL = "http://127.0.0.1:8000";
+const BaseURL = "http://faraday.cse.taylor.edu:8000";
 
 export const EventUrl = BaseURL + "/api/generateevent/";
 export const EventTypeUrl = BaseURL + "/api/decaytypelist/";
